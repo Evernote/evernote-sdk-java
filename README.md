@@ -39,6 +39,7 @@ Applications use OAuth to authenticate to the Evernote service. The code in samp
 1. Build the sample project:
 
     cd sample/oauth
+    
     mvn package
 1. Deploy sample/oauth/target/EDAMWebTest.war to your servlet container (e.g. Tomcat)
 1. Load the web application in your browser (e.g. http://localhost:8080/EDAMWebTest) 
