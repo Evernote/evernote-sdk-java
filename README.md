@@ -7,7 +7,7 @@ This SDK contains wrapper code used to call the Evernote Cloud API from Java app
 
 For Android-specific code and samples, see the [Evernote SDK for Android](http://www.github.com/evernote/evernote-sdk-android).
 
-The SDK also contains two samples. The code in sample/client demonstrates the basic use of Evernote API using developer tokens for authentication. The code in sample/oauth demonstrates the basic use of the SDK for web  applications that authenticate using OAuth.
+The SDK also contains two samples. The code in sample/oauth demonstrates the basic use of the SDK. The code in sample/client also demonstrates the basic use of API, but uses developer tokens instead of OAuth for authentication.
 
 Prerequisites
 -------------
@@ -19,7 +19,7 @@ In order to run the client client sample code, you need a developer token. Get o
 
 Getting Started - Client
 ------------------------
-The code in sample/client/EDAMDemo.java demonstrates the basics of using the Evernote API, using developer tokens to simplify the authentication process while you're learning. 
+The code in sample/client/EDAMDemo.java demonstrates the basics of using the Evernote API, using developer tokens instead of OAuth to simplify the authentication process while you're learning. Real applications that support multiple users need to use OAuth.
 
 1. Open sample/client/EDAMDemo.java
 2. Scroll down to the top of the EDAMDemo class and fill in your Evernote developer token.
@@ -32,10 +32,16 @@ The code in sample/client/EDAMDemo.java demonstrates the basics of using the Eve
 
 Getting Started - OAuth
 -----------------------
-Web applications must use OAuth to authenticate to the Evernote service. The code in sample/oauth produces a simple WAR that demonstrates the OAuth authentication process.
+Applications use OAuth to authenticate to the Evernote service. The code in sample/oauth demonstrate the OAuth authentication process.
 
-1. Deploy the webapp to your servlet container (e.g. Tomcat)
-2. Open the servlet container's webapps directory and find your exploded webapp (e.g. apache-tomcat-6.0.32/webapps/EDAMWebTest/
-3. Open the file index.jsp
-4. Fill in your Evernote API consumer key and secret.
-5. Load the web application in your browser (e.g. http://localhost:8080/EDAMWebTest) 
+1. Open the file sample/oauth/src/main/webapp/index.jsp
+1. Fill in your Evernote API consumer key and secret
+1. Build the sample project:
+
+    cd sample/oauth
+    
+    mvn package
+1. Deploy sample/oauth/target/EDAMWebTest.war to your servlet container (e.g. Tomcat)
+1. Load the web application in your browser (e.g. http://localhost:8080/EDAMWebTest) 
+
+If you want to modify and build the WAR yourself, 
