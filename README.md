@@ -1,5 +1,8 @@
-Evernote SDK for Java version 1.21
+Evernote SDK for Java 
 ==========================================
+
+Evernote API version 1.21
+
 
 Overview
 --------
