@@ -1,7 +1,7 @@
 Evernote SDK for Java 
 ==========================================
 
-Evernote API version 1.21
+Evernote API version 1.22
 
 
 Overview
