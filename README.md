@@ -47,8 +47,6 @@ In order to run the client client sample code, you need a developer token. Devel
 Including the SDK in your project
 ---------------------------------
 
-**The evernote-api artifact should be published in the Maven Central Repository shortly. Until then, you can run 'mvn install' to build the SDK and install the artifact into your local Maven repository.**
-
 The easiest way to incorporate the SDK into your Java project is to use Maven. If you're using Maven already, simply add a new dependency to your pom.xml:
 
     <dependency>
