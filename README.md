@@ -12,6 +12,8 @@ For Android-specific code and samples, see the [Evernote SDK for Android](http:/
 
 The SDK also contains two samples. The code in sample/oauth demonstrates the basic use of the SDK. The code in sample/client also demonstrates the basic use of API, but uses developer tokens instead of OAuth for authentication.
 
+JavaDocs for the SDK are available at http://dev.evernote.com/documentation/reference/javadoc/.
+
 Changes in version 1.23
 -----------------------
 We have completely reorganized the SDK as part of the release of API version 1.23. If you were using a previous version of the SDK, you will need to make a few changes to your project as part of moving to version 1.23.
