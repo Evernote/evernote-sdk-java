@@ -16,9 +16,9 @@ import java.util.*;
 import java.io.*;
 import java.security.MessageDigest;
 
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.transport.THttpClient;
-import org.apache.thrift.transport.TTransportException;
+import com.evernote.thrift.protocol.TBinaryProtocol;
+import com.evernote.thrift.transport.THttpClient;
+import com.evernote.thrift.transport.TTransportException;
 
 import com.evernote.edam.type.*;
 import com.evernote.edam.userstore.*;
