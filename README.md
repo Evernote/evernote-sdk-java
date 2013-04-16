@@ -105,3 +105,12 @@ Real applications use OAuth to authenticate to the Evernote service. At the end 
 
 1. Deploy `sample/oauth/target/EDAMWebTest.war` to your servlet container (e.g. Tomcat)
 1. Load the web application in your browser (e.g. `http://localhost:8080/EDAMWebTest`)
+
+Sample Code - Scala / Play
+--------------------------
+Real applications use OAuth to authenticate to the Evernote service with Scala / Play framework.  You need to install [Scala](http://www.scala-lang.org/) and [Play](http://www.playframework.com/) first.
+
+1. Open the file `app/controllers/Evernote.scala`
+1. Fill in your Evernote API consumer key and secret
+1. Run project with `play run`
+1. Load the web application in your browser (e.g. `http://localhost:9000`)
