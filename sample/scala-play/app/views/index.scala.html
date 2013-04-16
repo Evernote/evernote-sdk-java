@@ -1,0 +1,41 @@
+@()(implicit session: play.api.mvc.Session) 
+@import helper._
+
+@main(title = "Evernote SDK Java sample for Scala / Play ") {
+
+  <p>
+    This application uses the <a href='http://www.playframework.com/'>Play</a> framework to demonstrate the use of OAuth to authenticate to the Evernote web service.
+  </p>
+  <hr/>
+  <h2>Authentication</h2>
+    @if(session.get("token").isEmpty) {
+      <a href='/authenticate'>Click here</a> to connect Evernote
+    } else {
+      <a href='/clear'>Click here</a> to start over
+    }
+  <hr/>
+  @if(!session.get("notebooks").isEmpty) {
+    <h2>Notebooks</h2>
+    <ul>
+      @for(notebook <- session.get("notebooks").get.split(",")) {
+        <li>@notebook</li>
+      }
+    </ul>
+    <hr/>
+  }
+  <h2>Current status</h2>
+  <ul>
+    <li>
+      <b>NoteStore URL:</b>
+      @session.get("noteStoreUrl")
+    </li>
+  </ul>
+  <h3>Token Credentials:</h3>
+  <ul>
+    <li>
+      <b>token:</b>
+      @session.get("token")
+    </li>
+  </ul>
+
+}
