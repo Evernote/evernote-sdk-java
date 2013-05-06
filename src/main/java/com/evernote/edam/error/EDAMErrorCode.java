@@ -52,6 +52,12 @@ import com.evernote.thrift.TEnum;
  *         too many of something.</dd>
  *   <dt>UNSUPPORTED_OPERATION</dt>
  *     <dd>Operation denied because it is currently unsupported.</dd>
+ *   <dt>TAKEN_DOWN</dt>
+ *     <dd>Operation denied because access to the corresponding object is
+ *         prohibited in response to a take-down notice.</dd>
+ *   <dt>RATE_LIMIT_REACHED</dt>
+ *     <dd>Operation denied because the calling application has reached
+ *         its hourly API call limit for this user.</dd>
  * </dl>
  */
 public enum EDAMErrorCode implements TEnum {
@@ -71,7 +77,9 @@ public enum EDAMErrorCode implements TEnum {
   LEN_TOO_LONG(14),
   TOO_FEW(15),
   TOO_MANY(16),
-  UNSUPPORTED_OPERATION(17);
+  UNSUPPORTED_OPERATION(17),
+  TAKEN_DOWN(18),
+  RATE_LIMIT_REACHED(19);
 
   private final int value;
 
@@ -126,6 +134,10 @@ public enum EDAMErrorCode implements TEnum {
         return TOO_MANY;
       case 17:
         return UNSUPPORTED_OPERATION;
+      case 18:
+        return TAKEN_DOWN;
+      case 19:
+        return RATE_LIMIT_REACHED;
       default:
         return null;
     }

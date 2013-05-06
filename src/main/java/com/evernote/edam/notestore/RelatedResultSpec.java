@@ -53,11 +53,6 @@ import com.evernote.thrift.protocol.*;
  *     in the RelatedResult, which will contain the list of notebooks to
  *     to which the returned related notes belong.</dd>
  * </dl>
- * 
- * <dt>includeDebugInfo</dt>
- * <dd>NOTE: This should be excluded from the public API.<br /><br />
- *     If set to <code>true</code>, indicate that debug information should
- *     be returned in the 'debugInfo' field of RelatedResult.</dd>
  * </dl>
  */
 public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Serializable, Cloneable {
@@ -68,14 +63,12 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
   private static final TField MAX_TAGS_FIELD_DESC = new TField("maxTags", TType.I32, (short)3);
   private static final TField WRITABLE_NOTEBOOKS_ONLY_FIELD_DESC = new TField("writableNotebooksOnly", TType.BOOL, (short)4);
   private static final TField INCLUDE_CONTAINING_NOTEBOOKS_FIELD_DESC = new TField("includeContainingNotebooks", TType.BOOL, (short)5);
-  private static final TField INCLUDE_DEBUG_INFO_FIELD_DESC = new TField("includeDebugInfo", TType.BOOL, (short)6);
 
   private int maxNotes;
   private int maxNotebooks;
   private int maxTags;
   private boolean writableNotebooksOnly;
   private boolean includeContainingNotebooks;
-  private boolean includeDebugInfo;
 
 
   // isset id assignments
@@ -84,8 +77,7 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
   private static final int __MAXTAGS_ISSET_ID = 2;
   private static final int __WRITABLENOTEBOOKSONLY_ISSET_ID = 3;
   private static final int __INCLUDECONTAININGNOTEBOOKS_ISSET_ID = 4;
-  private static final int __INCLUDEDEBUGINFO_ISSET_ID = 5;
-  private boolean[] __isset_vector = new boolean[6];
+  private boolean[] __isset_vector = new boolean[5];
 
   public RelatedResultSpec() {
   }
@@ -100,7 +92,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
     this.maxTags = other.maxTags;
     this.writableNotebooksOnly = other.writableNotebooksOnly;
     this.includeContainingNotebooks = other.includeContainingNotebooks;
-    this.includeDebugInfo = other.includeDebugInfo;
   }
 
   public RelatedResultSpec deepCopy() {
@@ -118,8 +109,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
     this.writableNotebooksOnly = false;
     setIncludeContainingNotebooksIsSet(false);
     this.includeContainingNotebooks = false;
-    setIncludeDebugInfoIsSet(false);
-    this.includeDebugInfo = false;
   }
 
   public int getMaxNotes() {
@@ -232,28 +221,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
     __isset_vector[__INCLUDECONTAININGNOTEBOOKS_ISSET_ID] = value;
   }
 
-  public boolean isIncludeDebugInfo() {
-    return this.includeDebugInfo;
-  }
-
-  public void setIncludeDebugInfo(boolean includeDebugInfo) {
-    this.includeDebugInfo = includeDebugInfo;
-    setIncludeDebugInfoIsSet(true);
-  }
-
-  public void unsetIncludeDebugInfo() {
-    __isset_vector[__INCLUDEDEBUGINFO_ISSET_ID] = false;
-  }
-
-  /** Returns true if field includeDebugInfo is set (has been asigned a value) and false otherwise */
-  public boolean isSetIncludeDebugInfo() {
-    return __isset_vector[__INCLUDEDEBUGINFO_ISSET_ID];
-  }
-
-  public void setIncludeDebugInfoIsSet(boolean value) {
-    __isset_vector[__INCLUDEDEBUGINFO_ISSET_ID] = value;
-  }
-
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -309,15 +276,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
       if (!(this_present_includeContainingNotebooks && that_present_includeContainingNotebooks))
         return false;
       if (this.includeContainingNotebooks != that.includeContainingNotebooks)
-        return false;
-    }
-
-    boolean this_present_includeDebugInfo = true && this.isSetIncludeDebugInfo();
-    boolean that_present_includeDebugInfo = true && that.isSetIncludeDebugInfo();
-    if (this_present_includeDebugInfo || that_present_includeDebugInfo) {
-      if (!(this_present_includeDebugInfo && that_present_includeDebugInfo))
-        return false;
-      if (this.includeDebugInfo != that.includeDebugInfo)
         return false;
     }
 
@@ -382,15 +340,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetIncludeDebugInfo()).compareTo(typedOther.isSetIncludeDebugInfo());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetIncludeDebugInfo()) {      lastComparison = TBaseHelper.compareTo(this.includeDebugInfo, typedOther.includeDebugInfo);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     return 0;
   }
 
@@ -444,14 +393,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
-        case 6: // INCLUDE_DEBUG_INFO
-          if (field.type == TType.BOOL) {
-            this.includeDebugInfo = iprot.readBool();
-            setIncludeDebugInfoIsSet(true);
-          } else { 
-            TProtocolUtil.skip(iprot, field.type);
-          }
-          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -490,11 +431,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
       oprot.writeBool(this.includeContainingNotebooks);
       oprot.writeFieldEnd();
     }
-    if (isSetIncludeDebugInfo()) {
-      oprot.writeFieldBegin(INCLUDE_DEBUG_INFO_FIELD_DESC);
-      oprot.writeBool(this.includeDebugInfo);
-      oprot.writeFieldEnd();
-    }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
   }
@@ -531,12 +467,6 @@ public class RelatedResultSpec implements TBase<RelatedResultSpec>, java.io.Seri
       if (!first) sb.append(", ");
       sb.append("includeContainingNotebooks:");
       sb.append(this.includeContainingNotebooks);
-      first = false;
-    }
-    if (isSetIncludeDebugInfo()) {
-      if (!first) sb.append(", ");
-      sb.append("includeDebugInfo:");
-      sb.append(this.includeDebugInfo);
       first = false;
     }
     sb.append(")");

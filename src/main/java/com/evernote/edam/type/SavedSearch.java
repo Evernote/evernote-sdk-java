@@ -54,6 +54,20 @@ import com.evernote.thrift.protocol.*;
  *   account, and can be used to compare the order of modifications within the
  *   service.
  *   </dd>
+ * 
+ * <dt>scope</dt>
+ *   <dd><p>Specifies the set of notes that should be included in the search, if
+ *    possible.</p>
+ *    <p>Clients are expected to search as much of the desired scope as possible,
+ *    with the understanding that a given client may not be able to cover the full
+ *    specified scope. For example, when executing a search that includes notes in both
+ *    the owner's account and business notebooks, a mobile client may choose to only
+ *    search within the user's account because it is not capable of searching both
+ *    scopes simultaneously. When a search across multiple scopes is not possible,
+ *    a client may choose which scope to search based on the current application
+ *    context. If a client cannot search any of the desired scopes, it should refuse
+ *    to execute the search.</p>
+ *    </dd>
  * </dl>
  */
 public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cloneable {
@@ -64,12 +78,14 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
   private static final TField QUERY_FIELD_DESC = new TField("query", TType.STRING, (short)3);
   private static final TField FORMAT_FIELD_DESC = new TField("format", TType.I32, (short)4);
   private static final TField UPDATE_SEQUENCE_NUM_FIELD_DESC = new TField("updateSequenceNum", TType.I32, (short)5);
+  private static final TField SCOPE_FIELD_DESC = new TField("scope", TType.STRUCT, (short)6);
 
   private String guid;
   private String name;
   private String query;
   private QueryFormat format;
   private int updateSequenceNum;
+  private SavedSearchScope scope;
 
 
   // isset id assignments
@@ -97,6 +113,9 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
       this.format = other.format;
     }
     this.updateSequenceNum = other.updateSequenceNum;
+    if (other.isSetScope()) {
+      this.scope = new SavedSearchScope(other.scope);
+    }
   }
 
   public SavedSearch deepCopy() {
@@ -110,6 +129,7 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
     this.format = null;
     setUpdateSequenceNumIsSet(false);
     this.updateSequenceNum = 0;
+    this.scope = null;
   }
 
   public String getGuid() {
@@ -234,6 +254,29 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
     __isset_vector[__UPDATESEQUENCENUM_ISSET_ID] = value;
   }
 
+  public SavedSearchScope getScope() {
+    return this.scope;
+  }
+
+  public void setScope(SavedSearchScope scope) {
+    this.scope = scope;
+  }
+
+  public void unsetScope() {
+    this.scope = null;
+  }
+
+  /** Returns true if field scope is set (has been asigned a value) and false otherwise */
+  public boolean isSetScope() {
+    return this.scope != null;
+  }
+
+  public void setScopeIsSet(boolean value) {
+    if (!value) {
+      this.scope = null;
+    }
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -289,6 +332,15 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
       if (!(this_present_updateSequenceNum && that_present_updateSequenceNum))
         return false;
       if (this.updateSequenceNum != that.updateSequenceNum)
+        return false;
+    }
+
+    boolean this_present_scope = true && this.isSetScope();
+    boolean that_present_scope = true && that.isSetScope();
+    if (this_present_scope || that_present_scope) {
+      if (!(this_present_scope && that_present_scope))
+        return false;
+      if (!this.scope.equals(that.scope))
         return false;
     }
 
@@ -353,6 +405,15 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetScope()).compareTo(typedOther.isSetScope());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetScope()) {      lastComparison = TBaseHelper.compareTo(this.scope, typedOther.scope);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -402,6 +463,14 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 6: // SCOPE
+          if (field.type == TType.STRUCT) {
+            this.scope = new SavedSearchScope();
+            this.scope.read(iprot);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -447,6 +516,13 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
       oprot.writeFieldBegin(UPDATE_SEQUENCE_NUM_FIELD_DESC);
       oprot.writeI32(this.updateSequenceNum);
       oprot.writeFieldEnd();
+    }
+    if (this.scope != null) {
+      if (isSetScope()) {
+        oprot.writeFieldBegin(SCOPE_FIELD_DESC);
+        this.scope.write(oprot);
+        oprot.writeFieldEnd();
+      }
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -500,6 +576,16 @@ public class SavedSearch implements TBase<SavedSearch>, java.io.Serializable, Cl
       if (!first) sb.append(", ");
       sb.append("updateSequenceNum:");
       sb.append(this.updateSequenceNum);
+      first = false;
+    }
+    if (isSetScope()) {
+      if (!first) sb.append(", ");
+      sb.append("scope:");
+      if (this.scope == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.scope);
+      }
       first = false;
     }
     sb.append(")");

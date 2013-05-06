@@ -18,6 +18,7 @@ import com.evernote.thrift.TEnum;
 public enum PrivilegeLevel implements TEnum {
   NORMAL(1),
   PREMIUM(3),
+  VIP(5),
   MANAGER(7),
   SUPPORT(8),
   ADMIN(9);
@@ -45,6 +46,8 @@ public enum PrivilegeLevel implements TEnum {
         return NORMAL;
       case 3:
         return PREMIUM;
+      case 5:
+        return VIP;
       case 7:
         return MANAGER;
       case 8:

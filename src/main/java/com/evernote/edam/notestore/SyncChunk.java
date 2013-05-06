@@ -52,8 +52,8 @@ import com.evernote.thrift.protocol.*;
  *    If present, this is a list of non-expunged notes that
  *    have a USN in this chunk.  This will include notes that are "deleted"
  *    but not expunged (i.e. in the trash).  The notes will include their list
- *    of tags and resources, but the resource content and recognition data
- *    will not be supplied.
+ *    of tags and resources, but the note content, resource content, resource
+ *    recognition data and resource alternate data will not be supplied.
  *    </dd>
  * 
  *  <dt>notebooks</dt>

@@ -23,18 +23,27 @@ import com.evernote.thrift.protocol.*;
  *   must be one of the values of EDAMErrorCode.
  * 
  * message:  This may contain additional information about the error
+ * 
+ * rateLimitDuration:  Indicates the minimum number of seconds that an application should
+ *   expect subsequent API calls for this user to fail. The application should not retry
+ *   API requests for the user until at least this many seconds have passed. Present only
+ *   when errorCode is RATE_LIMIT_REACHED,
  */
 public class EDAMSystemException extends Exception implements TBase<EDAMSystemException>, java.io.Serializable, Cloneable {
   private static final TStruct STRUCT_DESC = new TStruct("EDAMSystemException");
 
   private static final TField ERROR_CODE_FIELD_DESC = new TField("errorCode", TType.I32, (short)1);
   private static final TField MESSAGE_FIELD_DESC = new TField("message", TType.STRING, (short)2);
+  private static final TField RATE_LIMIT_DURATION_FIELD_DESC = new TField("rateLimitDuration", TType.I32, (short)3);
 
   private EDAMErrorCode errorCode;
   private String message;
+  private int rateLimitDuration;
 
 
   // isset id assignments
+  private static final int __RATELIMITDURATION_ISSET_ID = 0;
+  private boolean[] __isset_vector = new boolean[1];
 
   public EDAMSystemException() {
   }
@@ -50,12 +59,14 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
    * Performs a deep copy on <i>other</i>.
    */
   public EDAMSystemException(EDAMSystemException other) {
+    System.arraycopy(other.__isset_vector, 0, __isset_vector, 0, other.__isset_vector.length);
     if (other.isSetErrorCode()) {
       this.errorCode = other.errorCode;
     }
     if (other.isSetMessage()) {
       this.message = other.message;
     }
+    this.rateLimitDuration = other.rateLimitDuration;
   }
 
   public EDAMSystemException deepCopy() {
@@ -65,6 +76,8 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
   public void clear() {
     this.errorCode = null;
     this.message = null;
+    setRateLimitDurationIsSet(false);
+    this.rateLimitDuration = 0;
   }
 
   /**
@@ -121,6 +134,28 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
     }
   }
 
+  public int getRateLimitDuration() {
+    return this.rateLimitDuration;
+  }
+
+  public void setRateLimitDuration(int rateLimitDuration) {
+    this.rateLimitDuration = rateLimitDuration;
+    setRateLimitDurationIsSet(true);
+  }
+
+  public void unsetRateLimitDuration() {
+    __isset_vector[__RATELIMITDURATION_ISSET_ID] = false;
+  }
+
+  /** Returns true if field rateLimitDuration is set (has been asigned a value) and false otherwise */
+  public boolean isSetRateLimitDuration() {
+    return __isset_vector[__RATELIMITDURATION_ISSET_ID];
+  }
+
+  public void setRateLimitDurationIsSet(boolean value) {
+    __isset_vector[__RATELIMITDURATION_ISSET_ID] = value;
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -149,6 +184,15 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
       if (!(this_present_message && that_present_message))
         return false;
       if (!this.message.equals(that.message))
+        return false;
+    }
+
+    boolean this_present_rateLimitDuration = true && this.isSetRateLimitDuration();
+    boolean that_present_rateLimitDuration = true && that.isSetRateLimitDuration();
+    if (this_present_rateLimitDuration || that_present_rateLimitDuration) {
+      if (!(this_present_rateLimitDuration && that_present_rateLimitDuration))
+        return false;
+      if (this.rateLimitDuration != that.rateLimitDuration)
         return false;
     }
 
@@ -186,6 +230,15 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetRateLimitDuration()).compareTo(typedOther.isSetRateLimitDuration());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetRateLimitDuration()) {      lastComparison = TBaseHelper.compareTo(this.rateLimitDuration, typedOther.rateLimitDuration);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -209,6 +262,14 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
         case 2: // MESSAGE
           if (field.type == TType.STRING) {
             this.message = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 3: // RATE_LIMIT_DURATION
+          if (field.type == TType.I32) {
+            this.rateLimitDuration = iprot.readI32();
+            setRateLimitDurationIsSet(true);
           } else { 
             TProtocolUtil.skip(iprot, field.type);
           }
@@ -238,6 +299,11 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
         oprot.writeFieldEnd();
       }
     }
+    if (isSetRateLimitDuration()) {
+      oprot.writeFieldBegin(RATE_LIMIT_DURATION_FIELD_DESC);
+      oprot.writeI32(this.rateLimitDuration);
+      oprot.writeFieldEnd();
+    }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
   }
@@ -262,6 +328,12 @@ public class EDAMSystemException extends Exception implements TBase<EDAMSystemEx
       } else {
         sb.append(this.message);
       }
+      first = false;
+    }
+    if (isSetRateLimitDuration()) {
+      if (!first) sb.append(", ");
+      sb.append("rateLimitDuration:");
+      sb.append(this.rateLimitDuration);
       first = false;
     }
     sb.append(")");

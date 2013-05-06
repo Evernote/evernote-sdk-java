@@ -1,7 +1,7 @@
 Evernote SDK for Java
 ==========================================
 
-Evernote API version 1.23
+Evernote API version 1.24
 
 
 Overview
@@ -14,29 +14,16 @@ The SDK also contains two samples. The code in `sample/oauth` demonstrates the b
 
 JavaDocs for the SDK are available at http://dev.evernote.com/documentation/reference/javadoc/.
 
-Changes in version 1.23
+Changes in version 1.24
 -----------------------
-We have completely reorganized the SDK as part of the release of API version 1.23. If you were using a previous version of the SDK, you will need to make a few changes to your project as part of moving to version 1.23.
 
-* We have moved to a [Maven](http://maven.apache.org) build process. Compiled JAR files are no longer included in this repository. See [Including the SDK in your project](#including-the-sdk-in-your-project) below.
+* Added Error code for Rate Limiting via [EdamErrorCode.RATE_LIMIT_REACHED](https://dev.evernote.com/documentation/reference/Errors.html#Enum_EDAMErrorCode) and [EdamSystemException.rateLimitDuraton](https://dev.evernote.com/documentation/reference/Errors.html#Struct_EDAMSystemException)
+* Deprecated [NoteStore.getSyncChunk](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_getSyncChunk) in favor of [NoteStore.getFilteredSyncChunk](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_getFilteredSyncChunk)
+* Deprecated [NoteStore.findNotes](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_findNotes) in favor of [NoteStore.findNotesMetaData](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_findNotesMetaData)
+* Added [BusinessUserInfo](https://dev.evernote.com/documentation/reference/Types.html#Struct_BusinessUserInfo) to [User](https://dev.evernote.com/documentation/reference/Types.html#Struct_BusinessUserInfo)
+* Added reminderOrder, reminderDoneTime, and reminderTime to [NoteAttributes](https://dev.evernote.com/documentation/reference/Types.html#Struct_NoteAttributes)
+* Added [SavedSearchScope](https://dev.evernote.com/documentation/reference/Types.html#Struct_SavedSearchScope) to [SavedSearch](https://dev.evernote.com/documentation/reference/Types.html#Struct_SavedSearch)
 
-* We have removed our dependency on `libthrift.jar`. All of the required Thrift runtime classes are now included directly in the SDK JAR file. If you had previously included `libthrift.jar` in your project, you must remove it.
-
-* We use a customized version of the [Apache Thrift](http://thrift.apache.org) runtime. To avoid namespace collisions with other projects that use Thrift, we have repackaged the runtime components that we use into the `com.evernote.thrift package`. You will need to change references to Thrift components such as `TBinaryProtocol`, `THttpClient` and `TTransportException` from `org.apache.thrift` to `com.evernote.thrift`. For example:
-
-    ```java
-    import org.apache.thrift.protocol.TBinaryProtocol;
-    import org.apache.thrift.transport.THttpClient;
-    import org.apache.thrift.transport.TTransportException;
-    ```
-
-    becomes
-
-    ```java
-    import com.evernote.thrift.protocol.TBinaryProtocol;
-    import com.evernote.thrift.transport.THttpClient;
-    import com.evernote.thrift.transport.TTransportException;
-    ```
 
 Prerequisites
 -------------
@@ -55,7 +42,7 @@ The easiest way to incorporate the SDK into your Java project is to use Maven. I
 <dependency>
     <groupId>com.evernote</groupId>
     <artifactId>evernote-api</artifactId>
-    <version>1.23</version>
+    <version>1.24</version>
 </dependency>
 ```
 
@@ -65,7 +52,7 @@ If you'd prefer to build the SDK yourself, it's as simple as running
 $ mvn package
 ```
 
-You'll find `evernote-sdk-1.23.jar` in the target directory after the build completes. This single JAR contains everything needed to use the API.
+You'll find `evernote-sdk-1.24.jar` in the target directory after the build completes. This single JAR contains everything needed to use the API.
 
 Sample Code - Client
 ------------------------
