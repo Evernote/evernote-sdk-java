@@ -212,6 +212,45 @@ public class UserStore {
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "authenticateLongSession failed: unknown result");
     }
 
+    public void revokeLongSession(String authenticationToken) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
+    {
+      send_revokeLongSession(authenticationToken);
+      recv_revokeLongSession();
+    }
+
+    public void send_revokeLongSession(String authenticationToken) throws TException
+    {
+      oprot_.writeMessageBegin(new TMessage("revokeLongSession", TMessageType.CALL, ++seqid_));
+      revokeLongSession_args args = new revokeLongSession_args();
+      args.setAuthenticationToken(authenticationToken);
+      args.write(oprot_);
+      oprot_.writeMessageEnd();
+      oprot_.getTransport().flush();
+    }
+
+    public void recv_revokeLongSession() throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
+    {
+      TMessage msg = iprot_.readMessageBegin();
+      if (msg.type == TMessageType.EXCEPTION) {
+        TApplicationException x = TApplicationException.read(iprot_);
+        iprot_.readMessageEnd();
+        throw x;
+      }
+      if (msg.seqid != seqid_) {
+        throw new TApplicationException(TApplicationException.BAD_SEQUENCE_ID, "revokeLongSession failed: out of sequence response");
+      }
+      revokeLongSession_result result = new revokeLongSession_result();
+      result.read(iprot_);
+      iprot_.readMessageEnd();
+      if (result.userException != null) {
+        throw result.userException;
+      }
+      if (result.systemException != null) {
+        throw result.systemException;
+      }
+      return;
+    }
+
     public AuthenticationResult authenticateToBusiness(String authenticationToken) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
     {
       send_authenticateToBusiness(authenticationToken);
@@ -488,7 +527,7 @@ public class UserStore {
     public checkVersion_args() {
       this.edamVersionMajor = (short)1;
 
-      this.edamVersionMinor = (short)23;
+      this.edamVersionMinor = (short)24;
 
     }
 
@@ -512,7 +551,7 @@ public class UserStore {
       this.clientName = null;
       this.edamVersionMajor = (short)1;
 
-      this.edamVersionMinor = (short)23;
+      this.edamVersionMinor = (short)24;
 
     }
 
@@ -1774,6 +1813,242 @@ public class UserStore {
         this.success.write(oprot);
         oprot.writeFieldEnd();
       } else if (this.isSetUserException()) {
+        oprot.writeFieldBegin(USER_EXCEPTION_FIELD_DESC);
+        this.userException.write(oprot);
+        oprot.writeFieldEnd();
+      } else if (this.isSetSystemException()) {
+        oprot.writeFieldBegin(SYSTEM_EXCEPTION_FIELD_DESC);
+        this.systemException.write(oprot);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+    public void validate() throws TException {
+      // check for required fields
+    }
+
+  }
+
+  private static class revokeLongSession_args implements TBase<revokeLongSession_args>, java.io.Serializable, Cloneable   {
+    private static final TStruct STRUCT_DESC = new TStruct("revokeLongSession_args");
+
+    private static final TField AUTHENTICATION_TOKEN_FIELD_DESC = new TField("authenticationToken", TType.STRING, (short)1);
+
+    private String authenticationToken;
+
+
+    // isset id assignments
+
+    public revokeLongSession_args() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public revokeLongSession_args(revokeLongSession_args other) {
+      if (other.isSetAuthenticationToken()) {
+        this.authenticationToken = other.authenticationToken;
+      }
+    }
+
+    public revokeLongSession_args deepCopy() {
+      return new revokeLongSession_args(this);
+    }
+
+    public void clear() {
+      this.authenticationToken = null;
+    }
+
+    public void setAuthenticationToken(String authenticationToken) {
+      this.authenticationToken = authenticationToken;
+    }
+
+    /** Returns true if field authenticationToken is set (has been asigned a value) and false otherwise */
+    public boolean isSetAuthenticationToken() {
+      return this.authenticationToken != null;
+    }
+
+    public int compareTo(revokeLongSession_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      revokeLongSession_args typedOther = (revokeLongSession_args)other;
+
+      lastComparison = Boolean.valueOf(isSetAuthenticationToken()).compareTo(typedOther.isSetAuthenticationToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAuthenticationToken()) {        lastComparison = TBaseHelper.compareTo(this.authenticationToken, typedOther.authenticationToken);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public void read(TProtocol iprot) throws TException {
+      TField field;
+      iprot.readStructBegin();
+      while (true)
+      {
+        field = iprot.readFieldBegin();
+        if (field.type == TType.STOP) { 
+          break;
+        }
+        switch (field.id) {
+          case 1: // AUTHENTICATION_TOKEN
+            if (field.type == TType.STRING) {
+              this.authenticationToken = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          default:
+            TProtocolUtil.skip(iprot, field.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+      validate();
+    }
+
+    public void write(TProtocol oprot) throws TException {
+      validate();
+
+      oprot.writeStructBegin(STRUCT_DESC);
+      if (this.authenticationToken != null) {
+        oprot.writeFieldBegin(AUTHENTICATION_TOKEN_FIELD_DESC);
+        oprot.writeString(this.authenticationToken);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+    public void validate() throws TException {
+      // check for required fields
+    }
+
+  }
+
+  private static class revokeLongSession_result implements TBase<revokeLongSession_result>, java.io.Serializable, Cloneable   {
+    private static final TStruct STRUCT_DESC = new TStruct("revokeLongSession_result");
+
+    private static final TField USER_EXCEPTION_FIELD_DESC = new TField("userException", TType.STRUCT, (short)1);
+    private static final TField SYSTEM_EXCEPTION_FIELD_DESC = new TField("systemException", TType.STRUCT, (short)2);
+
+    private com.evernote.edam.error.EDAMUserException userException;
+    private com.evernote.edam.error.EDAMSystemException systemException;
+
+
+    // isset id assignments
+
+    public revokeLongSession_result() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public revokeLongSession_result(revokeLongSession_result other) {
+      if (other.isSetUserException()) {
+        this.userException = new com.evernote.edam.error.EDAMUserException(other.userException);
+      }
+      if (other.isSetSystemException()) {
+        this.systemException = new com.evernote.edam.error.EDAMSystemException(other.systemException);
+      }
+    }
+
+    public revokeLongSession_result deepCopy() {
+      return new revokeLongSession_result(this);
+    }
+
+    public void clear() {
+      this.userException = null;
+      this.systemException = null;
+    }
+
+    /** Returns true if field userException is set (has been asigned a value) and false otherwise */
+    public boolean isSetUserException() {
+      return this.userException != null;
+    }
+
+    /** Returns true if field systemException is set (has been asigned a value) and false otherwise */
+    public boolean isSetSystemException() {
+      return this.systemException != null;
+    }
+
+    public int compareTo(revokeLongSession_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      revokeLongSession_result typedOther = (revokeLongSession_result)other;
+
+      lastComparison = Boolean.valueOf(isSetUserException()).compareTo(typedOther.isSetUserException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUserException()) {        lastComparison = TBaseHelper.compareTo(this.userException, typedOther.userException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetSystemException()).compareTo(typedOther.isSetSystemException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSystemException()) {        lastComparison = TBaseHelper.compareTo(this.systemException, typedOther.systemException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public void read(TProtocol iprot) throws TException {
+      TField field;
+      iprot.readStructBegin();
+      while (true)
+      {
+        field = iprot.readFieldBegin();
+        if (field.type == TType.STOP) { 
+          break;
+        }
+        switch (field.id) {
+          case 1: // USER_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.userException = new com.evernote.edam.error.EDAMUserException();
+              this.userException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 2: // SYSTEM_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.systemException = new com.evernote.edam.error.EDAMSystemException();
+              this.systemException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          default:
+            TProtocolUtil.skip(iprot, field.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+      validate();
+    }
+
+    public void write(TProtocol oprot) throws TException {
+      oprot.writeStructBegin(STRUCT_DESC);
+
+      if (this.isSetUserException()) {
         oprot.writeFieldBegin(USER_EXCEPTION_FIELD_DESC);
         this.userException.write(oprot);
         oprot.writeFieldEnd();

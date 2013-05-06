@@ -37,8 +37,8 @@ import com.evernote.thrift.protocol.*;
  *  <dt>email</dt>
  *    <dd>The email address registered for the user.  Must comply with
  *    RFC 2821 and RFC 2822.<br/>
- *    For privacy reasons, this field may not be populated when a User
- *    is retrieved via a call to UserStore.getUser().
+ *    Third party applications that authenticate using OAuth do not have
+ *    access to this field.
  *    Length:  EDAM_EMAIL_LEN_MIN - EDAM_EMAIL_LEN_MAX
  *    <br/>
  *    Regex:  EDAM_EMAIL_REGEX
@@ -110,6 +110,12 @@ import com.evernote.thrift.protocol.*;
  *    <dd>If present, this will contain a set of commerce information
  *    relating to the user's premium service level.
  *    </dd>
+ * 
+ *  <dt>businessUserInfo</dt>
+ *    <dd>If present, this will contain a set of business information
+ *    relating to the user's business membership.  If not present, the
+ *    user is not currently part of a business.
+ *    </dd>
  *  </dl>
  */
 public class User implements TBase<User>, java.io.Serializable, Cloneable {
@@ -129,6 +135,7 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
   private static final TField ATTRIBUTES_FIELD_DESC = new TField("attributes", TType.STRUCT, (short)15);
   private static final TField ACCOUNTING_FIELD_DESC = new TField("accounting", TType.STRUCT, (short)16);
   private static final TField PREMIUM_INFO_FIELD_DESC = new TField("premiumInfo", TType.STRUCT, (short)17);
+  private static final TField BUSINESS_USER_INFO_FIELD_DESC = new TField("businessUserInfo", TType.STRUCT, (short)18);
 
   private int id;
   private String username;
@@ -144,6 +151,7 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
   private UserAttributes attributes;
   private Accounting accounting;
   private PremiumInfo premiumInfo;
+  private BusinessUserInfo businessUserInfo;
 
 
   // isset id assignments
@@ -194,6 +202,9 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
     if (other.isSetPremiumInfo()) {
       this.premiumInfo = new PremiumInfo(other.premiumInfo);
     }
+    if (other.isSetBusinessUserInfo()) {
+      this.businessUserInfo = new BusinessUserInfo(other.businessUserInfo);
+    }
   }
 
   public User deepCopy() {
@@ -220,6 +231,7 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
     this.attributes = null;
     this.accounting = null;
     this.premiumInfo = null;
+    this.businessUserInfo = null;
   }
 
   public int getId() {
@@ -547,6 +559,29 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
     }
   }
 
+  public BusinessUserInfo getBusinessUserInfo() {
+    return this.businessUserInfo;
+  }
+
+  public void setBusinessUserInfo(BusinessUserInfo businessUserInfo) {
+    this.businessUserInfo = businessUserInfo;
+  }
+
+  public void unsetBusinessUserInfo() {
+    this.businessUserInfo = null;
+  }
+
+  /** Returns true if field businessUserInfo is set (has been asigned a value) and false otherwise */
+  public boolean isSetBusinessUserInfo() {
+    return this.businessUserInfo != null;
+  }
+
+  public void setBusinessUserInfoIsSet(boolean value) {
+    if (!value) {
+      this.businessUserInfo = null;
+    }
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -683,6 +718,15 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
       if (!(this_present_premiumInfo && that_present_premiumInfo))
         return false;
       if (!this.premiumInfo.equals(that.premiumInfo))
+        return false;
+    }
+
+    boolean this_present_businessUserInfo = true && this.isSetBusinessUserInfo();
+    boolean that_present_businessUserInfo = true && that.isSetBusinessUserInfo();
+    if (this_present_businessUserInfo || that_present_businessUserInfo) {
+      if (!(this_present_businessUserInfo && that_present_businessUserInfo))
+        return false;
+      if (!this.businessUserInfo.equals(that.businessUserInfo))
         return false;
     }
 
@@ -828,6 +872,15 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetBusinessUserInfo()).compareTo(typedOther.isSetBusinessUserInfo());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetBusinessUserInfo()) {      lastComparison = TBaseHelper.compareTo(this.businessUserInfo, typedOther.businessUserInfo);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -947,6 +1000,14 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 18: // BUSINESS_USER_INFO
+          if (field.type == TType.STRUCT) {
+            this.businessUserInfo = new BusinessUserInfo();
+            this.businessUserInfo.read(iprot);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -1045,6 +1106,13 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
       if (isSetPremiumInfo()) {
         oprot.writeFieldBegin(PREMIUM_INFO_FIELD_DESC);
         this.premiumInfo.write(oprot);
+        oprot.writeFieldEnd();
+      }
+    }
+    if (this.businessUserInfo != null) {
+      if (isSetBusinessUserInfo()) {
+        oprot.writeFieldBegin(BUSINESS_USER_INFO_FIELD_DESC);
+        this.businessUserInfo.write(oprot);
         oprot.writeFieldEnd();
       }
     }
@@ -1173,6 +1241,16 @@ public class User implements TBase<User>, java.io.Serializable, Cloneable {
         sb.append("null");
       } else {
         sb.append(this.premiumInfo);
+      }
+      first = false;
+    }
+    if (isSetBusinessUserInfo()) {
+      if (!first) sb.append(", ");
+      sb.append("businessUserInfo:");
+      if (this.businessUserInfo == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.businessUserInfo);
       }
       first = false;
     }

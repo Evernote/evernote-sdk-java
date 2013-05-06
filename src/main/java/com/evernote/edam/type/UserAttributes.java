@@ -162,11 +162,6 @@ import com.evernote.thrift.protocol.*;
  *        If not set, then the 'preferredLanguage' will be used.
  *    </dd>
  * 
- *  <dt>customerProfileId</dt>
- *    <dd>a numeric identified which provides a linkage between the user record
- *        and the direct credit card payment creditcard profile.
- *    </dd>
- * 
  *  <dt>educationalInstitution</dt>
  *    <dd>a flag indicating that the user is part of an educational institution which
  *    makes them eligible for discounts on bulk purchases
@@ -175,16 +170,27 @@ import com.evernote.thrift.protocol.*;
  *  <dt>businessAddress</dt>
  *    <dd>A string recording the business address of a Sponsored Account user who has requested invoicing.
  *    </dd>
- *  </dl>
  * 
  *  <dt>hideSponsorBilling</dt>
  *    <dd>A flag indicating whether to hide the billing information on a sponsored
  *        account owner's settings page
  *    </dd>
- *  </dl>
  * 
  *  <dt>taxExempt</dt>
  *    <dd>A flag indicating the user's sponsored group is exempt from sale tax
+ *    </dd>
+ * 
+ *  <dt>useEmailAutoFiling</dt>
+ *    <dd>A flag indicating whether the user chooses to allow Evernote to automatically
+ *        file and tag emailed notes
+ *    </dd>
+ * 
+ *  <dt>reminderEmailConfig</dt>
+ *    <dd>Configuration state for whether or not the user wishes to receive
+ *        reminder e-mail.  This setting applies to both the reminder e-mail sent
+ *        for personal reminder notes and for the reminder e-mail sent for reminder
+ *        notes in the user's business notebooks that the user has configured for
+ *        e-mail notifications.
  *    </dd>
  *  </dl>
  */
@@ -215,12 +221,13 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
   private static final TField TWITTER_ID_FIELD_DESC = new TField("twitterId", TType.STRING, (short)24);
   private static final TField GROUP_NAME_FIELD_DESC = new TField("groupName", TType.STRING, (short)25);
   private static final TField RECOGNITION_LANGUAGE_FIELD_DESC = new TField("recognitionLanguage", TType.STRING, (short)26);
-  private static final TField CUSTOMER_PROFILE_ID_FIELD_DESC = new TField("customerProfileId", TType.I64, (short)27);
   private static final TField REFERRAL_PROOF_FIELD_DESC = new TField("referralProof", TType.STRING, (short)28);
   private static final TField EDUCATIONAL_DISCOUNT_FIELD_DESC = new TField("educationalDiscount", TType.BOOL, (short)29);
   private static final TField BUSINESS_ADDRESS_FIELD_DESC = new TField("businessAddress", TType.STRING, (short)30);
   private static final TField HIDE_SPONSOR_BILLING_FIELD_DESC = new TField("hideSponsorBilling", TType.BOOL, (short)31);
   private static final TField TAX_EXEMPT_FIELD_DESC = new TField("taxExempt", TType.BOOL, (short)32);
+  private static final TField USE_EMAIL_AUTO_FILING_FIELD_DESC = new TField("useEmailAutoFiling", TType.BOOL, (short)33);
+  private static final TField REMINDER_EMAIL_CONFIG_FIELD_DESC = new TField("reminderEmailConfig", TType.I32, (short)34);
 
   private String defaultLocationName;
   private double defaultLatitude;
@@ -246,12 +253,13 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
   private String twitterId;
   private String groupName;
   private String recognitionLanguage;
-  private long customerProfileId;
   private String referralProof;
   private boolean educationalDiscount;
   private String businessAddress;
   private boolean hideSponsorBilling;
   private boolean taxExempt;
+  private boolean useEmailAutoFiling;
+  private ReminderEmailConfig reminderEmailConfig;
 
 
   // isset id assignments
@@ -267,10 +275,10 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
   private static final int __EMAILOPTOUTDATE_ISSET_ID = 9;
   private static final int __PARTNEREMAILOPTINDATE_ISSET_ID = 10;
   private static final int __CLIPFULLPAGE_ISSET_ID = 11;
-  private static final int __CUSTOMERPROFILEID_ISSET_ID = 12;
-  private static final int __EDUCATIONALDISCOUNT_ISSET_ID = 13;
-  private static final int __HIDESPONSORBILLING_ISSET_ID = 14;
-  private static final int __TAXEXEMPT_ISSET_ID = 15;
+  private static final int __EDUCATIONALDISCOUNT_ISSET_ID = 12;
+  private static final int __HIDESPONSORBILLING_ISSET_ID = 13;
+  private static final int __TAXEXEMPT_ISSET_ID = 14;
+  private static final int __USEEMAILAUTOFILING_ISSET_ID = 15;
   private boolean[] __isset_vector = new boolean[16];
 
   public UserAttributes() {
@@ -337,7 +345,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
     if (other.isSetRecognitionLanguage()) {
       this.recognitionLanguage = other.recognitionLanguage;
     }
-    this.customerProfileId = other.customerProfileId;
     if (other.isSetReferralProof()) {
       this.referralProof = other.referralProof;
     }
@@ -347,6 +354,10 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
     }
     this.hideSponsorBilling = other.hideSponsorBilling;
     this.taxExempt = other.taxExempt;
+    this.useEmailAutoFiling = other.useEmailAutoFiling;
+    if (other.isSetReminderEmailConfig()) {
+      this.reminderEmailConfig = other.reminderEmailConfig;
+    }
   }
 
   public UserAttributes deepCopy() {
@@ -390,8 +401,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
     this.twitterId = null;
     this.groupName = null;
     this.recognitionLanguage = null;
-    setCustomerProfileIdIsSet(false);
-    this.customerProfileId = 0;
     this.referralProof = null;
     setEducationalDiscountIsSet(false);
     this.educationalDiscount = false;
@@ -400,6 +409,9 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
     this.hideSponsorBilling = false;
     setTaxExemptIsSet(false);
     this.taxExempt = false;
+    setUseEmailAutoFilingIsSet(false);
+    this.useEmailAutoFiling = false;
+    this.reminderEmailConfig = null;
   }
 
   public String getDefaultLocationName() {
@@ -972,28 +984,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
     }
   }
 
-  public long getCustomerProfileId() {
-    return this.customerProfileId;
-  }
-
-  public void setCustomerProfileId(long customerProfileId) {
-    this.customerProfileId = customerProfileId;
-    setCustomerProfileIdIsSet(true);
-  }
-
-  public void unsetCustomerProfileId() {
-    __isset_vector[__CUSTOMERPROFILEID_ISSET_ID] = false;
-  }
-
-  /** Returns true if field customerProfileId is set (has been asigned a value) and false otherwise */
-  public boolean isSetCustomerProfileId() {
-    return __isset_vector[__CUSTOMERPROFILEID_ISSET_ID];
-  }
-
-  public void setCustomerProfileIdIsSet(boolean value) {
-    __isset_vector[__CUSTOMERPROFILEID_ISSET_ID] = value;
-  }
-
   public String getReferralProof() {
     return this.referralProof;
   }
@@ -1104,6 +1094,59 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
 
   public void setTaxExemptIsSet(boolean value) {
     __isset_vector[__TAXEXEMPT_ISSET_ID] = value;
+  }
+
+  public boolean isUseEmailAutoFiling() {
+    return this.useEmailAutoFiling;
+  }
+
+  public void setUseEmailAutoFiling(boolean useEmailAutoFiling) {
+    this.useEmailAutoFiling = useEmailAutoFiling;
+    setUseEmailAutoFilingIsSet(true);
+  }
+
+  public void unsetUseEmailAutoFiling() {
+    __isset_vector[__USEEMAILAUTOFILING_ISSET_ID] = false;
+  }
+
+  /** Returns true if field useEmailAutoFiling is set (has been asigned a value) and false otherwise */
+  public boolean isSetUseEmailAutoFiling() {
+    return __isset_vector[__USEEMAILAUTOFILING_ISSET_ID];
+  }
+
+  public void setUseEmailAutoFilingIsSet(boolean value) {
+    __isset_vector[__USEEMAILAUTOFILING_ISSET_ID] = value;
+  }
+
+  /**
+   * 
+   * @see ReminderEmailConfig
+   */
+  public ReminderEmailConfig getReminderEmailConfig() {
+    return this.reminderEmailConfig;
+  }
+
+  /**
+   * 
+   * @see ReminderEmailConfig
+   */
+  public void setReminderEmailConfig(ReminderEmailConfig reminderEmailConfig) {
+    this.reminderEmailConfig = reminderEmailConfig;
+  }
+
+  public void unsetReminderEmailConfig() {
+    this.reminderEmailConfig = null;
+  }
+
+  /** Returns true if field reminderEmailConfig is set (has been asigned a value) and false otherwise */
+  public boolean isSetReminderEmailConfig() {
+    return this.reminderEmailConfig != null;
+  }
+
+  public void setReminderEmailConfigIsSet(boolean value) {
+    if (!value) {
+      this.reminderEmailConfig = null;
+    }
   }
 
   @Override
@@ -1335,15 +1378,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
         return false;
     }
 
-    boolean this_present_customerProfileId = true && this.isSetCustomerProfileId();
-    boolean that_present_customerProfileId = true && that.isSetCustomerProfileId();
-    if (this_present_customerProfileId || that_present_customerProfileId) {
-      if (!(this_present_customerProfileId && that_present_customerProfileId))
-        return false;
-      if (this.customerProfileId != that.customerProfileId)
-        return false;
-    }
-
     boolean this_present_referralProof = true && this.isSetReferralProof();
     boolean that_present_referralProof = true && that.isSetReferralProof();
     if (this_present_referralProof || that_present_referralProof) {
@@ -1386,6 +1420,24 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
       if (!(this_present_taxExempt && that_present_taxExempt))
         return false;
       if (this.taxExempt != that.taxExempt)
+        return false;
+    }
+
+    boolean this_present_useEmailAutoFiling = true && this.isSetUseEmailAutoFiling();
+    boolean that_present_useEmailAutoFiling = true && that.isSetUseEmailAutoFiling();
+    if (this_present_useEmailAutoFiling || that_present_useEmailAutoFiling) {
+      if (!(this_present_useEmailAutoFiling && that_present_useEmailAutoFiling))
+        return false;
+      if (this.useEmailAutoFiling != that.useEmailAutoFiling)
+        return false;
+    }
+
+    boolean this_present_reminderEmailConfig = true && this.isSetReminderEmailConfig();
+    boolean that_present_reminderEmailConfig = true && that.isSetReminderEmailConfig();
+    if (this_present_reminderEmailConfig || that_present_reminderEmailConfig) {
+      if (!(this_present_reminderEmailConfig && that_present_reminderEmailConfig))
+        return false;
+      if (!this.reminderEmailConfig.equals(that.reminderEmailConfig))
         return false;
     }
 
@@ -1621,15 +1673,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetCustomerProfileId()).compareTo(typedOther.isSetCustomerProfileId());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetCustomerProfileId()) {      lastComparison = TBaseHelper.compareTo(this.customerProfileId, typedOther.customerProfileId);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetReferralProof()).compareTo(typedOther.isSetReferralProof());
     if (lastComparison != 0) {
       return lastComparison;
@@ -1671,6 +1714,24 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
       return lastComparison;
     }
     if (isSetTaxExempt()) {      lastComparison = TBaseHelper.compareTo(this.taxExempt, typedOther.taxExempt);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetUseEmailAutoFiling()).compareTo(typedOther.isSetUseEmailAutoFiling());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetUseEmailAutoFiling()) {      lastComparison = TBaseHelper.compareTo(this.useEmailAutoFiling, typedOther.useEmailAutoFiling);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReminderEmailConfig()).compareTo(typedOther.isSetReminderEmailConfig());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReminderEmailConfig()) {      lastComparison = TBaseHelper.compareTo(this.reminderEmailConfig, typedOther.reminderEmailConfig);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -1888,14 +1949,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
-        case 27: // CUSTOMER_PROFILE_ID
-          if (field.type == TType.I64) {
-            this.customerProfileId = iprot.readI64();
-            setCustomerProfileIdIsSet(true);
-          } else { 
-            TProtocolUtil.skip(iprot, field.type);
-          }
-          break;
         case 28: // REFERRAL_PROOF
           if (field.type == TType.STRING) {
             this.referralProof = iprot.readString();
@@ -1930,6 +1983,21 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
           if (field.type == TType.BOOL) {
             this.taxExempt = iprot.readBool();
             setTaxExemptIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 33: // USE_EMAIL_AUTO_FILING
+          if (field.type == TType.BOOL) {
+            this.useEmailAutoFiling = iprot.readBool();
+            setUseEmailAutoFilingIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 34: // REMINDER_EMAIL_CONFIG
+          if (field.type == TType.I32) {
+            this.reminderEmailConfig = ReminderEmailConfig.findByValue(iprot.readI32());
           } else { 
             TProtocolUtil.skip(iprot, field.type);
           }
@@ -2105,11 +2173,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
         oprot.writeFieldEnd();
       }
     }
-    if (isSetCustomerProfileId()) {
-      oprot.writeFieldBegin(CUSTOMER_PROFILE_ID_FIELD_DESC);
-      oprot.writeI64(this.customerProfileId);
-      oprot.writeFieldEnd();
-    }
     if (this.referralProof != null) {
       if (isSetReferralProof()) {
         oprot.writeFieldBegin(REFERRAL_PROOF_FIELD_DESC);
@@ -2138,6 +2201,18 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
       oprot.writeFieldBegin(TAX_EXEMPT_FIELD_DESC);
       oprot.writeBool(this.taxExempt);
       oprot.writeFieldEnd();
+    }
+    if (isSetUseEmailAutoFiling()) {
+      oprot.writeFieldBegin(USE_EMAIL_AUTO_FILING_FIELD_DESC);
+      oprot.writeBool(this.useEmailAutoFiling);
+      oprot.writeFieldEnd();
+    }
+    if (this.reminderEmailConfig != null) {
+      if (isSetReminderEmailConfig()) {
+        oprot.writeFieldBegin(REMINDER_EMAIL_CONFIG_FIELD_DESC);
+        oprot.writeI32(this.reminderEmailConfig.getValue());
+        oprot.writeFieldEnd();
+      }
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -2339,12 +2414,6 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
       }
       first = false;
     }
-    if (isSetCustomerProfileId()) {
-      if (!first) sb.append(", ");
-      sb.append("customerProfileId:");
-      sb.append(this.customerProfileId);
-      first = false;
-    }
     if (isSetReferralProof()) {
       if (!first) sb.append(", ");
       sb.append("referralProof:");
@@ -2381,6 +2450,22 @@ public class UserAttributes implements TBase<UserAttributes>, java.io.Serializab
       if (!first) sb.append(", ");
       sb.append("taxExempt:");
       sb.append(this.taxExempt);
+      first = false;
+    }
+    if (isSetUseEmailAutoFiling()) {
+      if (!first) sb.append(", ");
+      sb.append("useEmailAutoFiling:");
+      sb.append(this.useEmailAutoFiling);
+      first = false;
+    }
+    if (isSetReminderEmailConfig()) {
+      if (!first) sb.append(", ");
+      sb.append("reminderEmailConfig:");
+      if (this.reminderEmailConfig == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.reminderEmailConfig);
+      }
       first = false;
     }
     sb.append(")");

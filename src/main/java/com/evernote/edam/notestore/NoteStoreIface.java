@@ -15,32 +15,6 @@ import java.util.HashSet;
 import com.evernote.thrift.*;
 import com.evernote.thrift.protocol.*;
 
-  /**
-   * Service:  NoteStore
-   * <p>
-   * The NoteStore service is used by EDAM clients to exchange information
-   * about the collection of notes in an account.  This is primarily used for
-   * synchronization, but could also be used by a "thin" client without a full
-   * local cache.
-   * </p><p>
-   * All functions take an "authenticationToken" parameter, which is the
-   * value returned by the UserStore which permits access to the account.
-   * This parameter is mandatory for all functions.
-   * </p>
-   * 
-   * Calls which require an authenticationToken may throw an EDAMUserException
-   * for the following reasons:
-   *  <ul>
-   *   <li> AUTH_EXPIRED "authenticationToken" - token has expired
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "authenticationToken" - token is malformed
-   *   </li>
-   *   <li> DATA_REQUIRED "authenticationToken" - token is empty
-   *   </li>
-   *   <li> INVALID_AUTH "authenticationToken" - token signature is invalid
-   *   </li>
-   * </ul>
-   */
 public interface NoteStoreIface {
 
   /**
@@ -62,39 +36,7 @@ public interface NoteStoreIface {
   public SyncState getSyncStateWithMetrics(String authenticationToken, ClientUsageMetrics clientMetrics) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
 
   /**
-   * Asks the NoteStore to provide the state of the account in order of
-   * last modification.  This request retrieves one block of the server's
-   * state so that a client can make several small requests against a large
-   * account rather than getting the entire state in one big message.
-   * 
-   * @param afterUSN
-   *   The client can pass this value to ask only for objects that
-   *   have been updated after a certain point.  This allows the client to
-   *   receive updates after its last checkpoint rather than doing a full
-   *   synchronization on every pass.  The default value of "0" indicates
-   *   that the client wants to get objects from the start of the account.
-   * 
-   * @param maxEntries
-   *   The maximum number of modified objects that should be
-   *   returned in the result SyncChunk. This can be used to limit the size
-   *   of each individual message to be friendly for network transfer.
-   *   Applications should not request more than 256 objects at a time,
-   *   and must handle the case where the service returns less than the
-   *   requested number of objects in a given request even though more
-   *   objects are available on the service.
-   * 
-   * @param fullSyncOnly
-   *   If true, then the client only wants initial data for a full sync.
-   *   In this case, the service will not return any expunged objects,
-   *   and will not return any Resources, since these are also provided
-   *   in their corresponding Notes.
-   * 
-   * @throws EDAMUserException <ul>
-   *   <li> BAD_DATA_FORMAT "afterUSN" - if negative
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "maxEntries" - if less than 1
-   *   </li>
-   * </ul>
+   * DEPRECATED - use getFilteredSyncChunk.
    */
   public SyncChunk getSyncChunk(String authenticationToken, int afterUSN, int maxEntries, boolean fullSyncOnly) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
 
@@ -103,7 +45,7 @@ public interface NoteStoreIface {
    * last modification.  This request retrieves one block of the server's
    * state so that a client can make several small requests against a large
    * account rather than getting the entire state in one big message.
-   * This call gives more fine-grained control of the data that will
+   * This call gives fine-grained control of the data that will
    * be received by a client by omitting data elements that a client doesn't
    * need. This may reduce network traffic and sync times.
    * 
@@ -329,7 +271,7 @@ public interface NoteStoreIface {
    * If the notebook contains any Notes, they will be moved to the current
    * default notebook and moved into the trash (i.e. Note.active=false).
    * <p/>
-   * NOTE: This function is not available to third party applications.
+   * NOTE: This function is generally not available to third party applications.
    * Calls will result in an EDAMUserException with the error code
    * PERMISSION_DENIED.
    * 
@@ -485,7 +427,7 @@ public interface NoteStoreIface {
   /**
    * Permanently deletes the tag with the provided GUID, if present.
    * <p/>
-   * NOTE: This function is not available to third party applications.
+   * NOTE: This function is generally not available to third party applications.
    * Calls will result in an EDAMUserException with the error code
    * PERMISSION_DENIED.
    * 
@@ -526,6 +468,10 @@ public interface NoteStoreIface {
    *   </li>
    *   <li> PERMISSION_DENIED "SavedSearch" - private Tag, user doesn't own
    *   </li>
+   * 
+   * @throws EDAMNotFoundException <ul>
+   *   <li> "SavedSearch.guid" - not found, by GUID
+   *   </li>
    * </ul>
    */
   public com.evernote.edam.type.SavedSearch getSearch(String authenticationToken, String guid) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, com.evernote.edam.error.EDAMNotFoundException, TException;
@@ -535,8 +481,9 @@ public interface NoteStoreIface {
    * 
    * @param search
    *   The desired list of fields for the search are specified in this
-   *   object.  The caller must specify the
-   *   name, query, and format of the search.
+   *   object. The caller must specify the name and query for the
+   *   search, and may optionally specify a search scope.
+   *   The SavedSearch.format field is ignored by the service.
    * 
    * @return
    *   The newly created SavedSearch.  The server-side GUID will be
@@ -547,8 +494,6 @@ public interface NoteStoreIface {
    *   </li>
    *   <li> BAD_DATA_FORMAT "SavedSearch.query" - invalid length
    *   </li>
-   *   <li> BAD_DATA_FORMAT "SavedSearch.format" - not a valid QueryFormat value
-   *   </li>
    *   <li> DATA_CONFLICT "SavedSearch.name" - name already in use
    *   </li>
    *   <li> LIMIT_REACHED "SavedSearch" - at max number of searches
@@ -558,9 +503,9 @@ public interface NoteStoreIface {
   public com.evernote.edam.type.SavedSearch createSearch(String authenticationToken, com.evernote.edam.type.SavedSearch search) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
 
   /**
-   * Submits search changes to the service.  The provided data must include
-   * the search's guid field for identification.  The service will apply
-   * updates to the following search fields:  name, query, and format
+   * Submits search changes to the service. The provided data must include
+   * the search's guid field for identification. The service will apply
+   * updates to the following search fields: name, query, and scope.
    * 
    * @param search
    *   The search object containing the requested changes.
@@ -572,8 +517,6 @@ public interface NoteStoreIface {
    *   <li> BAD_DATA_FORMAT "SavedSearch.name" - invalid length or pattern
    *   </li>
    *   <li> BAD_DATA_FORMAT "SavedSearch.query" - invalid length
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "SavedSearch.format" - not a valid QueryFormat value
    *   </li>
    *   <li> DATA_CONFLICT "SavedSearch.name" - name already in use
    *   </li>
@@ -591,7 +534,7 @@ public interface NoteStoreIface {
   /**
    * Permanently deletes the saved search with the provided GUID, if present.
    * <p/>
-   * NOTE: This function is not available to third party applications.
+   * NOTE: This function is generally not available to third party applications.
    * Calls will result in an EDAMUserException with the error code
    * PERMISSION_DENIED.
    * 
@@ -616,49 +559,7 @@ public interface NoteStoreIface {
   public int expungeSearch(String authenticationToken, String guid) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, com.evernote.edam.error.EDAMNotFoundException, TException;
 
   /**
-   * Used to find a set of the notes from a user's account based on various
-   * criteria specified via a NoteFilter object.
-   * The Notes (and any embedded Resources) will have empty Data bodies for
-   * contents, resource data, and resource recognition fields.  These values
-   * must be retrieved individually.
-   * 
-   * @param authenticationToken
-   *   Must be a valid token for the user's account unless the NoteFilter
-   *   'notebookGuid' is the GUID of a public notebook.
-   * 
-   * @param filter
-   *   The list of criteria that will constrain the notes to be returned.
-   * 
-   * @param offset
-   *   The numeric index of the first note to show within the sorted
-   *   results.  The numbering scheme starts with "0".  This can be used for
-   *   pagination.
-   * 
-   * @param maxNotes
-   *   The most notes to return in this query.  The service will return a set
-   *   of notes that is no larger than this number, but may return fewer notes
-   *   if needed.  The NoteList.totalNotes field in the return value will
-   *   indicate whether there are more values available after the returned set.
-   * 
-   * @return
-   *   The list of notes that match the criteria.
-   * 
-   * @throws EDAMUserException <ul>
-   *   <li> BAD_DATA_FORMAT "offset" - not between 0 and EDAM_USER_NOTES_MAX
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "maxNotes" - not between 0 and EDAM_USER_NOTES_MAX
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "NoteFilter.notebookGuid" - if malformed
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "NoteFilter.tagGuids" - if any are malformed
-   *   </li>
-   *   <li> BAD_DATA_FORMAT "NoteFilter.words" - if search string too long
-   *   </li>
-   * 
-   * @throws EDAMNotFoundException <ul>
-   *   <li> "Notebook.guid" - not found, by GUID
-   *   </li>
-   * </ul>
+   * DEPRECATED. Use findNotesMetadata.
    */
   public NoteList findNotes(String authenticationToken, NoteFilter filter, int offset, int maxNotes) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, com.evernote.edam.error.EDAMNotFoundException, TException;
 
@@ -708,10 +609,11 @@ public interface NoteStoreIface {
   /**
    * Used to find the high-level information about a set of the notes from a
    * user's account based on various criteria specified via a NoteFilter object.
-   * This should be used instead of 'findNotes' whenever the client doesn't
-   * really need all of the deep structure of every Note and Resource, but
-   * just wants a high-level list of information.  This will save time and
-   * bandwidth.
+   * <p/>
+   * Web applications that wish to periodically check for new content in a user's
+   * Evernote account should consider using webhooks instead of polling this API.
+   * See http://dev.evernote.com/documentation/cloud/chapters/polling_notification.php
+   * for more information.
    * 
    * @param authenticationToken
    *   Must be a valid token for the user's account unless the NoteFilter
@@ -1611,8 +1513,7 @@ public interface NoteStoreIface {
    *    The uri string for the public notebook, from Notebook.publishing.uri.
    * 
    * @throws EDAMNotFoundException <ul>
-   *   <li> "Publishing.uri" - not found, by URI
-   *   </li>
+   *   <li>"Publishing.uri" - not found, by URI</li>
    * </ul>
    */
   public com.evernote.edam.type.Notebook getPublicNotebook(int userId, String publicUri) throws com.evernote.edam.error.EDAMSystemException, com.evernote.edam.error.EDAMNotFoundException, TException;
@@ -1623,7 +1524,7 @@ public interface NoteStoreIface {
    * for a user to access the notebook of the shared notebook owner.
    * 
    * @param sharedNotebook
-   *   An shared notebook object populated with the email address of the share
+   *   A shared notebook object populated with the email address of the share
    *   recipient, the notebook guid and the access permissions. All other
    *   attributes of the shared object are ignored.
    * @return
@@ -1632,11 +1533,11 @@ public interface NoteStoreIface {
    *   SharedNotebook.
    * 
    * @throws EDAMUserException <ul>
-   *   <li> BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
+   *   <li>BAD_DATA_FORMAT "SharedNotebook.email" - if the  email was not valid
    *   </li>
    *   </ul>
    * @throws EDAMNotFoundException <ul>
-   *   <li> Notebook.guid - if the notebookGuid is not a valid guid for the user
+   *   <li>Notebook.guid - if the notebookGuid is not a valid guid for the user
    *   </li>
    *   </ul>
    */
@@ -1647,8 +1548,8 @@ public interface NoteStoreIface {
    * 
    * @param authenticationToken
    *   Must be an authentication token from the owner or a shared notebook
-   *   authentication token with sufficient permissions to change invitations
-   *   for a notebook.
+   *   authentication token or business authentication token with sufficient
+   *   permissions to change invitations for a notebook.
    * 
    * @param sharedNotebook
    *  The SharedNotebook object containing the requested changes.
@@ -1694,7 +1595,8 @@ public interface NoteStoreIface {
    *     The email can't be sent because this would exceed the user's daily
    *     email limit.
    *   </li>
-   *   <li> PERMISSION_DENIED "Notebook" - private note, user doesn't own
+   *   <li> PERMISSION_DENIED "Notebook.guid" - The user doesn't have permission to
+   *     send a message for the specified notebook.
    *   </li>
    * </ul>
    * 
@@ -1718,7 +1620,7 @@ public interface NoteStoreIface {
    * Expunges the SharedNotebooks in the user's account using the
    * SharedNotebook.id as the identifier.
    * <p/>
-   * NOTE: This function is not available to third party applications.
+   * NOTE: This function is generally not available to third party applications.
    * Calls will result in an EDAMUserException with the error code
    * PERMISSION_DENIED.
    * 
@@ -1786,7 +1688,7 @@ public interface NoteStoreIface {
   /**
    * Permanently expunges the linked notebook from the account.
    * <p/>
-   * NOTE: This function is not available to third party applications.
+   * NOTE: This function is generally not available to third party applications.
    * Calls will result in an EDAMUserException with the error code
    * PERMISSION_DENIED.
    * 
@@ -1868,6 +1770,10 @@ public interface NoteStoreIface {
 
   /**
    * Attempts to send a single note to one or more email recipients.
+   * <p/>
+   * NOTE: This function is generally not available to third party applications.
+   * Calls will result in an EDAMUserException with the error code
+   * PERMISSION_DENIED.
    * 
    * @param authenticationToken
    *    The note will be sent as the user logged in via this token, using that

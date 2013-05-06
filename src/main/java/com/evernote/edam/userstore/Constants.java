@@ -29,6 +29,6 @@ public class Constants {
    * Clients pass this to the service using UserStore.checkVersion at the
    * beginning of a session to confirm that they are not out of date.
    */
-  public static final short EDAM_VERSION_MINOR = (short)23;
+  public static final short EDAM_VERSION_MINOR = (short)24;
 
 }

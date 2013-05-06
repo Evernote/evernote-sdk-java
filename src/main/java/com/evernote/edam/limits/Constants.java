@@ -90,8 +90,10 @@ public class Constants {
 
   /**
    * A regular expression that must match any VAT ID given to Evernote.
+   * ref http://en.wikipedia.org/wiki/VAT_identification_number
+   * ref http://my.safaribooksonline.com/book/programming/regular-expressions/9780596802837/4dot-validation-and-formatting/id2995136
    */
-  public static final String EDAM_VAT_REGEX = "[A-Za-z]{2}.+";
+  public static final String EDAM_VAT_REGEX = "^((AT)?U[0-9]{8}|(BE)?0?[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}L|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}L|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})|[0-9]{9}MVA|[0-9]{6}|CHE[0-9]{9}(TVA|MWST|IVA)$";
 
   /**
    * The minimum length of a timezone specification string
@@ -206,6 +208,30 @@ public class Constants {
     EDAM_MIME_TYPES.add("video/mp4");
     EDAM_MIME_TYPES.add("audio/aac");
     EDAM_MIME_TYPES.add("audio/mp4");
+  }
+
+  /**
+   * The set of MIME types that Evernote will parse and index for
+   * searching. With exception of images, and PDFs, which are
+   * handled in a different way.
+   */
+  public static final Set<String> EDAM_INDEXABLE_RESOURCE_MIME_TYPES = new HashSet<String>();
+  static {
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/msword");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/mspowerpoint");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/excel");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.ms-word");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.ms-powerpoint");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.ms-excel");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.openxmlformats-officedocument.presentationml.presentation");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.apple.pages");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.apple.numbers");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/vnd.apple.keynote");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/x-iwork-pages-sffpages");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/x-iwork-numbers-sffnumbers");
+    EDAM_INDEXABLE_RESOURCE_MIME_TYPES.add("application/x-iwork-keynote-sffkey");
   }
 
   /**
@@ -554,10 +580,11 @@ public class Constants {
   public static final long EDAM_USER_UPLOAD_LIMIT_PREMIUM = 1073741824L;
 
   /**
-   * The number of bytes of new data that may be uploaded to a business
-   * account each month.
+   * The number of bytes of new data that may be uploaded to a Business user's
+   * personal account each month. Note that content uploaded into the Business
+   * notebooks by the user does not count against this limit.
    */
-  public static final long EDAM_USER_UPLOAD_LIMIT_BUSINESS = 1073741824L;
+  public static final long EDAM_USER_UPLOAD_LIMIT_BUSINESS = 2147483647L;
 
   /**
    * Maximum total size of a Note that can be added to a Free account.
@@ -586,9 +613,17 @@ public class Constants {
   public static final int EDAM_RESOURCE_SIZE_MAX_PREMIUM = 104857600;
 
   /**
-   * Maximum number of linked notebooks per account
+   * Maximum number of linked notebooks per account, for a free
+   * account.
    */
   public static final int EDAM_USER_LINKED_NOTEBOOK_MAX = 100;
+
+  /**
+   * Maximum number of linked notebooks per account, for a premium
+   * account.  Users who are part of an active business are also
+   * covered under "premium".
+   */
+  public static final int EDAM_USER_LINKED_NOTEBOOK_MAX_PREMIUM = 250;
 
   /**
    * Maximum number of shared notebooks per notebook
@@ -606,57 +641,84 @@ public class Constants {
   public static final int EDAM_NOTE_CONTENT_CLASS_LEN_MAX = 32;
 
   /**
-   * This string constant is the prefix one can use to obtain all
-   * types of notes for the Evernote 'Hello' application via
-   * filtered sync chunks or search strings, based off of the
-   * content class.
-   */
-  public static final String EDAM_HELLO_APP_CONTENT_CLASS_PREFIX = "evernote.hello.";
-
-  /**
-   * This string constant is the prefix one can use to obtain all
-   * types of notes for the Evernote 'Food' application via
-   * filtered sync chunks or search strings, based off of the
-   * content class.
-   */
-  public static final String EDAM_FOOD_APP_CONTENT_CLASS_PREFIX = "evernote.food.";
-
-  /**
    * The regular expression that the content class of a note must match
    * to be valid.
    */
   public static final String EDAM_NOTE_CONTENT_CLASS_REGEX = "^[A-Za-z0-9_.-]{3,32}$";
 
   /**
-   * The content class value used for notes structured specifically to
-   * represent an encounter with a person, as is done with the
-   * Evernote "Hello" application.
+   * The content class prefix used for all notes created by Evernote Hello.
+   * This prefix can be used to assemble individual content class strings,
+   * or can be used to create a wildcard search to get all notes created by
+   * Hello. When performing a wildcard search via filtered sync chunks or
+   * search strings, the * character must be appended to this constant.
+   */
+  public static final String EDAM_HELLO_APP_CONTENT_CLASS_PREFIX = "evernote.hello.";
+
+  /**
+   * The content class prefix used for all notes created by Evernote Food.
+   * This prefix can be used to assemble individual content class strings,
+   * or can be used to create a wildcard search to get all notes created by
+   * Food. When performing a wildcard search via filtered sync chunks or
+   * search strings, the * character must be appended to this constant.
+   */
+  public static final String EDAM_FOOD_APP_CONTENT_CLASS_PREFIX = "evernote.food.";
+
+  /**
+   * The content class prefix used for structured notes created by Evernote
+   * Hello that represents an encounter with a person. When performing a
+   * wildcard search via filtered sync chunks or search strings, the *
+   * character must be appended to this constant.
    */
   public static final String EDAM_CONTENT_CLASS_HELLO_ENCOUNTER = "evernote.hello.encounter";
 
   /**
-   * The content class value used for notes structured specifically to
-   * represent a profile of the user, as is done with the Evernote "Hello"
-   * application.
+   * The content class prefix used for structured notes created by Evernote
+   * Hello that represents the user's profile. When performing a
+   * wildcard search via filtered sync chunks or search strings, the *
+   * character must be appended to this constant.
    */
   public static final String EDAM_CONTENT_CLASS_HELLO_PROFILE = "evernote.hello.profile";
 
   /**
-   * The content class value used for notes structured specifically to
-   * capture the experience of a particular meal, as is done with the
-   * Evernote "Food" application.
+   * The content class prefix used for structured notes created by
+   * Evernote Food that captures the experience of a particular meal.
+   * When performing a wildcard search via filtered sync chunks or search
+   * strings, the * character must be appended to this constant.
    */
   public static final String EDAM_CONTENT_CLASS_FOOD_MEAL = "evernote.food.meal";
 
   /**
-   * The content class value used for notes created by Evernote Skitch.
+   * The content class prefix used for structured notes created by Evernote
+   * Skitch. When performing a wildcard search via filtered sync chunks
+   * or search strings, the * character must be appended to this constant.
+   */
+  public static final String EDAM_CONTENT_CLASS_SKITCH_PREFIX = "evernote.skitch";
+
+  /**
+   * The content class value used for structured image notes created by Evernote
+   * Skitch.
    */
   public static final String EDAM_CONTENT_CLASS_SKITCH = "evernote.skitch";
 
   /**
-   * The content class value used for notes created by Evernote Penultimate.
+   * The content class value used for structured PDF notes created by Evernote
+   * Skitch.
    */
-  public static final String EDAM_CONTENT_CLASS_PENULTIMATE = "evernote.penultimate";
+  public static final String EDAM_CONTENT_CLASS_SKITCH_PDF = "evernote.skitch.pdf";
+
+  /**
+   * The content class prefix used for structured notes created by Evernote
+   * Penultimate. When performing a wildcard search via filtered sync chunks
+   * or search strings, the * character must be appended to this constant.
+   */
+  public static final String EDAM_CONTENT_CLASS_PENULTIMATE_PREFIX = "evernote.penultimate.";
+
+  /**
+   * The content class value used for structured notes created by Evernote
+   * Penultimate that represents a Penultimate notebook.
+   */
+  public static final String EDAM_CONTENT_CLASS_PENULTIMATE_NOTEBOOK = "evernote.penultimate.notebook";
 
   /**
    * The minimum length of the plain text in a findRelated query, assuming that
@@ -707,6 +769,11 @@ public class Constants {
   public static final String EDAM_BUSINESS_NOTEBOOK_DESCRIPTION_REGEX = "^[^\\p{Cc}\\p{Z}]([^\\p{Cc}\\p{Zl}\\p{Zp}]{0,198}[^\\p{Cc}\\p{Z}])?$";
 
   /**
+   * The maximum length of a business phone number.
+   */
+  public static final int EDAM_BUSINESS_PHONE_NUMBER_LEN_MAX = 20;
+
+  /**
    * Minimum length of a preference name
    */
   public static final int EDAM_PREFERENCE_NAME_LEN_MIN = 3;
@@ -734,7 +801,7 @@ public class Constants {
   /**
    * Maximum number of values per preference name
    */
-  public static final int EDAM_MAX_VALUES_PER_PREFERENCE = 250;
+  public static final int EDAM_MAX_VALUES_PER_PREFERENCE = 256;
 
   /**
    * A preference name must match this regex.
@@ -745,6 +812,16 @@ public class Constants {
    * A preference value must match this regex.
    */
   public static final String EDAM_PREFERENCE_VALUE_REGEX = "^[^\\p{Cc}]{1,1024}$";
+
+  /**
+   * The name of the preferences entry that contains shortcuts.
+   */
+  public static final String EDAM_PREFERENCE_SHORTCUTS = "evernote.shortcuts";
+
+  /**
+   * The maximum number of shortcuts that a user may have.
+   */
+  public static final int EDAM_PREFERENCE_SHORTCUTS_MAX_VALUES = 250;
 
   /**
    * Maximum length of the device identifier string associated with long sessions.
@@ -765,5 +842,20 @@ public class Constants {
    * Regular expression for device description strings associated with long sessions.
    */
   public static final String EDAM_DEVICE_DESCRIPTION_REGEX = "^[^\\p{Cc}]{1,64}$";
+
+  /**
+   * Maximum number of search suggestions that can be returned
+   */
+  public static final int EDAM_SEARCH_SUGGESTIONS_MAX = 10;
+
+  /**
+   * Maximum length of the search suggestion prefix
+   */
+  public static final int EDAM_SEARCH_SUGGESTIONS_PREFIX_LEN_MAX = 1024;
+
+  /**
+   * Minimum length of the search suggestion prefix
+   */
+  public static final int EDAM_SEARCH_SUGGESTIONS_PREFIX_LEN_MIN = 2;
 
 }

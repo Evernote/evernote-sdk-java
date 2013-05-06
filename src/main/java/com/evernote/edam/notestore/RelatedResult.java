@@ -43,12 +43,6 @@ import com.evernote.thrift.protocol.*;
  *     list will occur once per notebook GUID and are represented as
  *     NotebookDescriptor objects.</dd>
  * </dl>
- * 
- * <dt>debugInfo</dt>
- * <dd>NOTE: This should be excluded from the public API.<br /><br />
- *     If <code>includeDebugInfo</code> in RelatedResultSpec is set to
- *     <code>true</code>, this field may contain debug information
- *     if the service decides to do so.</dd>
  * </dl>
  */
 public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable, Cloneable {
@@ -58,13 +52,11 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
   private static final TField NOTEBOOKS_FIELD_DESC = new TField("notebooks", TType.LIST, (short)2);
   private static final TField TAGS_FIELD_DESC = new TField("tags", TType.LIST, (short)3);
   private static final TField CONTAINING_NOTEBOOKS_FIELD_DESC = new TField("containingNotebooks", TType.LIST, (short)4);
-  private static final TField DEBUG_INFO_FIELD_DESC = new TField("debugInfo", TType.STRING, (short)5);
 
   private List<com.evernote.edam.type.Note> notes;
   private List<com.evernote.edam.type.Notebook> notebooks;
   private List<com.evernote.edam.type.Tag> tags;
   private List<com.evernote.edam.type.NotebookDescriptor> containingNotebooks;
-  private String debugInfo;
 
 
   // isset id assignments
@@ -104,9 +96,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
       }
       this.containingNotebooks = __this__containingNotebooks;
     }
-    if (other.isSetDebugInfo()) {
-      this.debugInfo = other.debugInfo;
-    }
   }
 
   public RelatedResult deepCopy() {
@@ -118,7 +107,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
     this.notebooks = null;
     this.tags = null;
     this.containingNotebooks = null;
-    this.debugInfo = null;
   }
 
   public int getNotesSize() {
@@ -273,29 +261,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
     }
   }
 
-  public String getDebugInfo() {
-    return this.debugInfo;
-  }
-
-  public void setDebugInfo(String debugInfo) {
-    this.debugInfo = debugInfo;
-  }
-
-  public void unsetDebugInfo() {
-    this.debugInfo = null;
-  }
-
-  /** Returns true if field debugInfo is set (has been asigned a value) and false otherwise */
-  public boolean isSetDebugInfo() {
-    return this.debugInfo != null;
-  }
-
-  public void setDebugInfoIsSet(boolean value) {
-    if (!value) {
-      this.debugInfo = null;
-    }
-  }
-
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -342,15 +307,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
       if (!(this_present_containingNotebooks && that_present_containingNotebooks))
         return false;
       if (!this.containingNotebooks.equals(that.containingNotebooks))
-        return false;
-    }
-
-    boolean this_present_debugInfo = true && this.isSetDebugInfo();
-    boolean that_present_debugInfo = true && that.isSetDebugInfo();
-    if (this_present_debugInfo || that_present_debugInfo) {
-      if (!(this_present_debugInfo && that_present_debugInfo))
-        return false;
-      if (!this.debugInfo.equals(that.debugInfo))
         return false;
     }
 
@@ -402,15 +358,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
       return lastComparison;
     }
     if (isSetContainingNotebooks()) {      lastComparison = TBaseHelper.compareTo(this.containingNotebooks, typedOther.containingNotebooks);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetDebugInfo()).compareTo(typedOther.isSetDebugInfo());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetDebugInfo()) {      lastComparison = TBaseHelper.compareTo(this.debugInfo, typedOther.debugInfo);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -500,13 +447,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
-        case 5: // DEBUG_INFO
-          if (field.type == TType.STRING) {
-            this.debugInfo = iprot.readString();
-          } else { 
-            TProtocolUtil.skip(iprot, field.type);
-          }
-          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -576,13 +516,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
         oprot.writeFieldEnd();
       }
     }
-    if (this.debugInfo != null) {
-      if (isSetDebugInfo()) {
-        oprot.writeFieldBegin(DEBUG_INFO_FIELD_DESC);
-        oprot.writeString(this.debugInfo);
-        oprot.writeFieldEnd();
-      }
-    }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
   }
@@ -628,16 +561,6 @@ public class RelatedResult implements TBase<RelatedResult>, java.io.Serializable
         sb.append("null");
       } else {
         sb.append(this.containingNotebooks);
-      }
-      first = false;
-    }
-    if (isSetDebugInfo()) {
-      if (!first) sb.append(", ");
-      sb.append("debugInfo:");
-      if (this.debugInfo == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.debugInfo);
       }
       first = false;
     }

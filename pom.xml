@@ -8,7 +8,7 @@
   <artifactId>evernote-api</artifactId>
   <packaging>jar</packaging>
   <name>Evernote Web Service API</name>
-  <version>1.23</version>
+  <version>1.24</version>
   <description></description>
   <url>http://dev.evernote.com</url>
   <licenses>
@@ -32,11 +32,17 @@
   </scm>
   <developers>
     <developer>
+      <id>tsmith</id>
+      <name>Ty Smith</name>
+      <email>tsmith@evernote.com</email>
+    </developer>
+    <developer>
       <id>shitchings</id>
       <name>Seth Hitchings</name>
       <email>shitchings@evernote.com</email>
     </developer>
   </developers>
+  
   <issueManagement>
     <url>https://github.com/evernote/evernote-sdk-java/issues</url>
     <system>GitHub Issues</system>
