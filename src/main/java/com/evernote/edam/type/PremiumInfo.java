@@ -33,7 +33,7 @@ import com.evernote.thrift.protocol.*;
  *  <dt>premiumExpirationDate</dt>
  *    <dd>
  *    The date when the user's Premium account expires, or the date when the
- *    user's account will be charged if it has a recurring payment method.
+ *    user's account is due for payment if it has a recurring payment method.
  *    </dd>
  *  <dt>premiumExtendable</dt>
  *    <dd>
@@ -60,6 +60,10 @@ import com.evernote.thrift.protocol.*;
  *    <dd>
  *    DEPRECATED - will be removed in a future update.
  *    </dd>
+ *  <dt>premiumUpgradable</dt>
+ *    <dd>
+ *    True if the user is eligible for purchasing Premium account upgrade.
+ *    </dd>
  *  </dl>
  */
 public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cloneable {
@@ -75,6 +79,7 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
   private static final TField CAN_PURCHASE_UPLOAD_ALLOWANCE_FIELD_DESC = new TField("canPurchaseUploadAllowance", TType.BOOL, (short)8);
   private static final TField SPONSORED_GROUP_NAME_FIELD_DESC = new TField("sponsoredGroupName", TType.STRING, (short)9);
   private static final TField SPONSORED_GROUP_ROLE_FIELD_DESC = new TField("sponsoredGroupRole", TType.I32, (short)10);
+  private static final TField PREMIUM_UPGRADABLE_FIELD_DESC = new TField("premiumUpgradable", TType.BOOL, (short)11);
 
   private long currentTime;
   private boolean premium;
@@ -86,6 +91,7 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
   private boolean canPurchaseUploadAllowance;
   private String sponsoredGroupName;
   private SponsoredGroupRole sponsoredGroupRole;
+  private boolean premiumUpgradable;
 
 
   // isset id assignments
@@ -97,7 +103,8 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
   private static final int __PREMIUMPENDING_ISSET_ID = 5;
   private static final int __PREMIUMCANCELLATIONPENDING_ISSET_ID = 6;
   private static final int __CANPURCHASEUPLOADALLOWANCE_ISSET_ID = 7;
-  private boolean[] __isset_vector = new boolean[8];
+  private static final int __PREMIUMUPGRADABLE_ISSET_ID = 8;
+  private boolean[] __isset_vector = new boolean[9];
 
   public PremiumInfo() {
   }
@@ -147,6 +154,7 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
     if (other.isSetSponsoredGroupRole()) {
       this.sponsoredGroupRole = other.sponsoredGroupRole;
     }
+    this.premiumUpgradable = other.premiumUpgradable;
   }
 
   public PremiumInfo deepCopy() {
@@ -172,6 +180,8 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
     this.canPurchaseUploadAllowance = false;
     this.sponsoredGroupName = null;
     this.sponsoredGroupRole = null;
+    setPremiumUpgradableIsSet(false);
+    this.premiumUpgradable = false;
   }
 
   public long getCurrentTime() {
@@ -404,6 +414,28 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
     }
   }
 
+  public boolean isPremiumUpgradable() {
+    return this.premiumUpgradable;
+  }
+
+  public void setPremiumUpgradable(boolean premiumUpgradable) {
+    this.premiumUpgradable = premiumUpgradable;
+    setPremiumUpgradableIsSet(true);
+  }
+
+  public void unsetPremiumUpgradable() {
+    __isset_vector[__PREMIUMUPGRADABLE_ISSET_ID] = false;
+  }
+
+  /** Returns true if field premiumUpgradable is set (has been asigned a value) and false otherwise */
+  public boolean isSetPremiumUpgradable() {
+    return __isset_vector[__PREMIUMUPGRADABLE_ISSET_ID];
+  }
+
+  public void setPremiumUpgradableIsSet(boolean value) {
+    __isset_vector[__PREMIUMUPGRADABLE_ISSET_ID] = value;
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -504,6 +536,15 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
       if (!(this_present_sponsoredGroupRole && that_present_sponsoredGroupRole))
         return false;
       if (!this.sponsoredGroupRole.equals(that.sponsoredGroupRole))
+        return false;
+    }
+
+    boolean this_present_premiumUpgradable = true && this.isSetPremiumUpgradable();
+    boolean that_present_premiumUpgradable = true && that.isSetPremiumUpgradable();
+    if (this_present_premiumUpgradable || that_present_premiumUpgradable) {
+      if (!(this_present_premiumUpgradable && that_present_premiumUpgradable))
+        return false;
+      if (this.premiumUpgradable != that.premiumUpgradable)
         return false;
     }
 
@@ -613,6 +654,15 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetPremiumUpgradable()).compareTo(typedOther.isSetPremiumUpgradable());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetPremiumUpgradable()) {      lastComparison = TBaseHelper.compareTo(this.premiumUpgradable, typedOther.premiumUpgradable);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -704,6 +754,14 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 11: // PREMIUM_UPGRADABLE
+          if (field.type == TType.BOOL) {
+            this.premiumUpgradable = iprot.readBool();
+            setPremiumUpgradableIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -756,6 +814,11 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
         oprot.writeI32(this.sponsoredGroupRole.getValue());
         oprot.writeFieldEnd();
       }
+    }
+    if (isSetPremiumUpgradable()) {
+      oprot.writeFieldBegin(PREMIUM_UPGRADABLE_FIELD_DESC);
+      oprot.writeBool(this.premiumUpgradable);
+      oprot.writeFieldEnd();
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -817,6 +880,12 @@ public class PremiumInfo implements TBase<PremiumInfo>, java.io.Serializable, Cl
       } else {
         sb.append(this.sponsoredGroupRole);
       }
+      first = false;
+    }
+    if (isSetPremiumUpgradable()) {
+      if (!first) sb.append(", ");
+      sb.append("premiumUpgradable:");
+      sb.append(this.premiumUpgradable);
       first = false;
     }
     sb.append(")");

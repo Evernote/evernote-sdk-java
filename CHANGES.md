@@ -1,6 +1,16 @@
 Evernote SDK for Java Changelog
 -------------------------------
 
+* 1.24 May 6th, 2013
+	* API changes
+		* Added Error code for Rate Limiting via [EdamErrorCode.RATE_LIMIT_REACHED](https://dev.evernote.com/documentation/reference/Errors.html#Enum_EDAMErrorCode) and [EdamSystemException.rateLimitDuraton](https://dev.evernote.com/documentation/reference/Errors.html#Struct_EDAMSystemException)
+		* Deprecated [NoteStore.getSyncChunk](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_getSyncChunk) in favor of [NoteStore.getFilteredSyncChunk](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_getFilteredSyncChunk)
+		* Deprecated [NoteStore.findNotes](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_findNotes) in favor of [NoteStore.findNotesMetaData](https://dev.evernote.com/documentation/reference/NoteStore.html#Fn_NoteStore_findNotesMetaData)
+		* Added [BusinessUserInfo](https://dev.evernote.com/documentation/reference/Types.html#Struct_BusinessUserInfo) to [User](https://dev.evernote.com/documentation/reference/Types.html#Struct_BusinessUserInfo)
+		* Added reminderOrder, reminderDoneTime, and reminderTime to [NoteAttributes](https://dev.evernote.com/documentation/reference/Types.html#Struct_NoteAttributes)
+		* Added [SavedSearchScope](https://dev.evernote.com/documentation/reference/Types.html#Struct_SavedSearchScope) to [SavedSearch](https://dev.evernote.com/documentation/reference/Types.html#Struct_SavedSearch)
+				
+
 * 1.23 - December 7, 2012
     * Organizational changes
         * Moved to a Maven build process

@@ -65,10 +65,52 @@ import com.evernote.thrift.protocol.*;
  * <dt>shareDate</dt>
  *  <dd>The date and time when this note was directly shared via its own URL.
  *  This is only set on notes that were individually shared - it is independent
- *  of any notebook-level sharing of the containing notepbook. This field
+ *  of any notebook-level sharing of the containing notebook. This field
  *  is treated as "read-only" for clients; the server will ignore changes
  *  to this field from an external client.
  *  </dd>
+ * 
+ * <dt>reminderOrder</dt>
+ * <dd>The set of notes with this parameter set are considered
+ * "reminders" and are to be treated specially by clients to give them
+ * higher UI prominence within a notebook.  The value is used to sort
+ * the reminder notes within the notebook with higher values
+ * representing greater prominence.  Outside of the context of a
+ * notebook, the value of this parameter is undefined.  The value is
+ * not intended to be compared to the values of reminder notes in
+ * other notebooks.  In order to allow clients to place a note at a
+ * higher precedence than other notes, you should never set a value
+ * greater than the current time (as defined for a Timetstamp). To
+ * place a note at higher precedence than existing notes, set the
+ * value to the current time as defined for a timestamp (milliseconds
+ * since the epoch).  Synchronizing clients must remember the time when
+ * the update was performed, using the local clock on the client,
+ * and use that value when they later upload the note to the service.
+ * Clients must not set the reminderOrder to the reminderTime as the
+ * reminderTime could be in the future.  Those two fields are never
+ * intended to be related.  The correct value for reminderOrder field
+ * for new notes is the "current" time when the user indicated that
+ * the note is a reminder.  Clients may implement a separate
+ * "sort by date" feature to show notes ordered by reminderTime.
+ * Whenever a reminderDoneTime or reminderTime is set but a
+ * reminderOrder is not set, the server will fill in the current
+ * server time for the reminderOrder field.</dd>
+ * 
+ * <dt>reminderDoneTime</dt>
+ * <dd>The date and time when a user dismissed/"marked done" the reminder
+ * on the note.  Users typically do not manually set this value directly
+ * as it is set to the time when the user dismissed/"marked done" the
+ * reminder.</dd>
+ * 
+ * <dt>reminderTime</dt>
+ * <dd>The date and time a user has selected to be reminded of the note.
+ * A note with this value set is known as a "reminder" and the user can
+ * be reminded, via e-mail or client-specific notifications, of the note
+ * when the time is reached or about to be reached.  When a user sets
+ * a reminder time on a note that has a reminder done time, and that
+ * reminder time is in the future, then the reminder done time should be
+ * cleared.  This should happen regardless of any existing reminder time
+ * that may have previously existed on the note.</dd>
  * 
  * <dt>placeName</dt>
  * <dd>Allows the user to assign a human-readable location name associated
@@ -89,7 +131,9 @@ import com.evernote.thrift.protocol.*;
  * application does not specifically support the specified class,
  * the client MUST treat the note as read-only. In this case, the
  * client MAY modify the note's notebook and tags via the
- * Note.notebookGuid and Note.tagGuids fields.
+ * Note.notebookGuid and Note.tagGuids fields.  The client MAY also
+ * modify the pinProminence field as well as the reminderTime and
+ * reminderDismissTime fields.
  * <p>Applications should set contentClass only when they are creating notes
  * that contain structured information that needs to be maintained in order
  * for the user to be able to use the note within that application.
@@ -149,6 +193,9 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
   private static final TField SOURCE_URL_FIELD_DESC = new TField("sourceURL", TType.STRING, (short)15);
   private static final TField SOURCE_APPLICATION_FIELD_DESC = new TField("sourceApplication", TType.STRING, (short)16);
   private static final TField SHARE_DATE_FIELD_DESC = new TField("shareDate", TType.I64, (short)17);
+  private static final TField REMINDER_ORDER_FIELD_DESC = new TField("reminderOrder", TType.I64, (short)18);
+  private static final TField REMINDER_DONE_TIME_FIELD_DESC = new TField("reminderDoneTime", TType.I64, (short)19);
+  private static final TField REMINDER_TIME_FIELD_DESC = new TField("reminderTime", TType.I64, (short)20);
   private static final TField PLACE_NAME_FIELD_DESC = new TField("placeName", TType.STRING, (short)21);
   private static final TField CONTENT_CLASS_FIELD_DESC = new TField("contentClass", TType.STRING, (short)22);
   private static final TField APPLICATION_DATA_FIELD_DESC = new TField("applicationData", TType.STRUCT, (short)23);
@@ -164,6 +211,9 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
   private String sourceURL;
   private String sourceApplication;
   private long shareDate;
+  private long reminderOrder;
+  private long reminderDoneTime;
+  private long reminderTime;
   private String placeName;
   private String contentClass;
   private LazyMap applicationData;
@@ -177,7 +227,10 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
   private static final int __LONGITUDE_ISSET_ID = 2;
   private static final int __ALTITUDE_ISSET_ID = 3;
   private static final int __SHAREDATE_ISSET_ID = 4;
-  private boolean[] __isset_vector = new boolean[5];
+  private static final int __REMINDERORDER_ISSET_ID = 5;
+  private static final int __REMINDERDONETIME_ISSET_ID = 6;
+  private static final int __REMINDERTIME_ISSET_ID = 7;
+  private boolean[] __isset_vector = new boolean[8];
 
   public NoteAttributes() {
   }
@@ -204,6 +257,9 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
       this.sourceApplication = other.sourceApplication;
     }
     this.shareDate = other.shareDate;
+    this.reminderOrder = other.reminderOrder;
+    this.reminderDoneTime = other.reminderDoneTime;
+    this.reminderTime = other.reminderTime;
     if (other.isSetPlaceName()) {
       this.placeName = other.placeName;
     }
@@ -252,6 +308,12 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
     this.sourceApplication = null;
     setShareDateIsSet(false);
     this.shareDate = 0;
+    setReminderOrderIsSet(false);
+    this.reminderOrder = 0;
+    setReminderDoneTimeIsSet(false);
+    this.reminderDoneTime = 0;
+    setReminderTimeIsSet(false);
+    this.reminderTime = 0;
     this.placeName = null;
     this.contentClass = null;
     this.applicationData = null;
@@ -459,6 +521,72 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
 
   public void setShareDateIsSet(boolean value) {
     __isset_vector[__SHAREDATE_ISSET_ID] = value;
+  }
+
+  public long getReminderOrder() {
+    return this.reminderOrder;
+  }
+
+  public void setReminderOrder(long reminderOrder) {
+    this.reminderOrder = reminderOrder;
+    setReminderOrderIsSet(true);
+  }
+
+  public void unsetReminderOrder() {
+    __isset_vector[__REMINDERORDER_ISSET_ID] = false;
+  }
+
+  /** Returns true if field reminderOrder is set (has been asigned a value) and false otherwise */
+  public boolean isSetReminderOrder() {
+    return __isset_vector[__REMINDERORDER_ISSET_ID];
+  }
+
+  public void setReminderOrderIsSet(boolean value) {
+    __isset_vector[__REMINDERORDER_ISSET_ID] = value;
+  }
+
+  public long getReminderDoneTime() {
+    return this.reminderDoneTime;
+  }
+
+  public void setReminderDoneTime(long reminderDoneTime) {
+    this.reminderDoneTime = reminderDoneTime;
+    setReminderDoneTimeIsSet(true);
+  }
+
+  public void unsetReminderDoneTime() {
+    __isset_vector[__REMINDERDONETIME_ISSET_ID] = false;
+  }
+
+  /** Returns true if field reminderDoneTime is set (has been asigned a value) and false otherwise */
+  public boolean isSetReminderDoneTime() {
+    return __isset_vector[__REMINDERDONETIME_ISSET_ID];
+  }
+
+  public void setReminderDoneTimeIsSet(boolean value) {
+    __isset_vector[__REMINDERDONETIME_ISSET_ID] = value;
+  }
+
+  public long getReminderTime() {
+    return this.reminderTime;
+  }
+
+  public void setReminderTime(long reminderTime) {
+    this.reminderTime = reminderTime;
+    setReminderTimeIsSet(true);
+  }
+
+  public void unsetReminderTime() {
+    __isset_vector[__REMINDERTIME_ISSET_ID] = false;
+  }
+
+  /** Returns true if field reminderTime is set (has been asigned a value) and false otherwise */
+  public boolean isSetReminderTime() {
+    return __isset_vector[__REMINDERTIME_ISSET_ID];
+  }
+
+  public void setReminderTimeIsSet(boolean value) {
+    __isset_vector[__REMINDERTIME_ISSET_ID] = value;
   }
 
   public String getPlaceName() {
@@ -681,6 +809,33 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
         return false;
     }
 
+    boolean this_present_reminderOrder = true && this.isSetReminderOrder();
+    boolean that_present_reminderOrder = true && that.isSetReminderOrder();
+    if (this_present_reminderOrder || that_present_reminderOrder) {
+      if (!(this_present_reminderOrder && that_present_reminderOrder))
+        return false;
+      if (this.reminderOrder != that.reminderOrder)
+        return false;
+    }
+
+    boolean this_present_reminderDoneTime = true && this.isSetReminderDoneTime();
+    boolean that_present_reminderDoneTime = true && that.isSetReminderDoneTime();
+    if (this_present_reminderDoneTime || that_present_reminderDoneTime) {
+      if (!(this_present_reminderDoneTime && that_present_reminderDoneTime))
+        return false;
+      if (this.reminderDoneTime != that.reminderDoneTime)
+        return false;
+    }
+
+    boolean this_present_reminderTime = true && this.isSetReminderTime();
+    boolean that_present_reminderTime = true && that.isSetReminderTime();
+    if (this_present_reminderTime || that_present_reminderTime) {
+      if (!(this_present_reminderTime && that_present_reminderTime))
+        return false;
+      if (this.reminderTime != that.reminderTime)
+        return false;
+    }
+
     boolean this_present_placeName = true && this.isSetPlaceName();
     boolean that_present_placeName = true && that.isSetPlaceName();
     if (this_present_placeName || that_present_placeName) {
@@ -823,6 +978,33 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetReminderOrder()).compareTo(typedOther.isSetReminderOrder());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReminderOrder()) {      lastComparison = TBaseHelper.compareTo(this.reminderOrder, typedOther.reminderOrder);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReminderDoneTime()).compareTo(typedOther.isSetReminderDoneTime());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReminderDoneTime()) {      lastComparison = TBaseHelper.compareTo(this.reminderDoneTime, typedOther.reminderDoneTime);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetReminderTime()).compareTo(typedOther.isSetReminderTime());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReminderTime()) {      lastComparison = TBaseHelper.compareTo(this.reminderTime, typedOther.reminderTime);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetPlaceName()).compareTo(typedOther.isSetPlaceName());
     if (lastComparison != 0) {
       return lastComparison;
@@ -949,6 +1131,30 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 18: // REMINDER_ORDER
+          if (field.type == TType.I64) {
+            this.reminderOrder = iprot.readI64();
+            setReminderOrderIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 19: // REMINDER_DONE_TIME
+          if (field.type == TType.I64) {
+            this.reminderDoneTime = iprot.readI64();
+            setReminderDoneTimeIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 20: // REMINDER_TIME
+          if (field.type == TType.I64) {
+            this.reminderTime = iprot.readI64();
+            setReminderTimeIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         case 21: // PLACE_NAME
           if (field.type == TType.STRING) {
             this.placeName = iprot.readString();
@@ -1061,6 +1267,21 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
     if (isSetShareDate()) {
       oprot.writeFieldBegin(SHARE_DATE_FIELD_DESC);
       oprot.writeI64(this.shareDate);
+      oprot.writeFieldEnd();
+    }
+    if (isSetReminderOrder()) {
+      oprot.writeFieldBegin(REMINDER_ORDER_FIELD_DESC);
+      oprot.writeI64(this.reminderOrder);
+      oprot.writeFieldEnd();
+    }
+    if (isSetReminderDoneTime()) {
+      oprot.writeFieldBegin(REMINDER_DONE_TIME_FIELD_DESC);
+      oprot.writeI64(this.reminderDoneTime);
+      oprot.writeFieldEnd();
+    }
+    if (isSetReminderTime()) {
+      oprot.writeFieldBegin(REMINDER_TIME_FIELD_DESC);
+      oprot.writeI64(this.reminderTime);
       oprot.writeFieldEnd();
     }
     if (this.placeName != null) {
@@ -1182,6 +1403,24 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
       if (!first) sb.append(", ");
       sb.append("shareDate:");
       sb.append(this.shareDate);
+      first = false;
+    }
+    if (isSetReminderOrder()) {
+      if (!first) sb.append(", ");
+      sb.append("reminderOrder:");
+      sb.append(this.reminderOrder);
+      first = false;
+    }
+    if (isSetReminderDoneTime()) {
+      if (!first) sb.append(", ");
+      sb.append("reminderDoneTime:");
+      sb.append(this.reminderDoneTime);
+      first = false;
+    }
+    if (isSetReminderTime()) {
+      if (!first) sb.append(", ");
+      sb.append("reminderTime:");
+      sb.append(this.reminderTime);
       first = false;
     }
     if (isSetPlaceName()) {

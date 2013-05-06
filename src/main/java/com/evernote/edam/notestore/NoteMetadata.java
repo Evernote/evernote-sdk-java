@@ -46,6 +46,7 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
   private static final TField CONTENT_LENGTH_FIELD_DESC = new TField("contentLength", TType.I32, (short)5);
   private static final TField CREATED_FIELD_DESC = new TField("created", TType.I64, (short)6);
   private static final TField UPDATED_FIELD_DESC = new TField("updated", TType.I64, (short)7);
+  private static final TField DELETED_FIELD_DESC = new TField("deleted", TType.I64, (short)8);
   private static final TField UPDATE_SEQUENCE_NUM_FIELD_DESC = new TField("updateSequenceNum", TType.I32, (short)10);
   private static final TField NOTEBOOK_GUID_FIELD_DESC = new TField("notebookGuid", TType.STRING, (short)11);
   private static final TField TAG_GUIDS_FIELD_DESC = new TField("tagGuids", TType.LIST, (short)12);
@@ -58,6 +59,7 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
   private int contentLength;
   private long created;
   private long updated;
+  private long deleted;
   private int updateSequenceNum;
   private String notebookGuid;
   private List<String> tagGuids;
@@ -70,9 +72,10 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
   private static final int __CONTENTLENGTH_ISSET_ID = 0;
   private static final int __CREATED_ISSET_ID = 1;
   private static final int __UPDATED_ISSET_ID = 2;
-  private static final int __UPDATESEQUENCENUM_ISSET_ID = 3;
-  private static final int __LARGESTRESOURCESIZE_ISSET_ID = 4;
-  private boolean[] __isset_vector = new boolean[5];
+  private static final int __DELETED_ISSET_ID = 3;
+  private static final int __UPDATESEQUENCENUM_ISSET_ID = 4;
+  private static final int __LARGESTRESOURCESIZE_ISSET_ID = 5;
+  private boolean[] __isset_vector = new boolean[6];
 
   public NoteMetadata() {
   }
@@ -98,6 +101,7 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
     this.contentLength = other.contentLength;
     this.created = other.created;
     this.updated = other.updated;
+    this.deleted = other.deleted;
     this.updateSequenceNum = other.updateSequenceNum;
     if (other.isSetNotebookGuid()) {
       this.notebookGuid = other.notebookGuid;
@@ -131,6 +135,8 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
     this.created = 0;
     setUpdatedIsSet(false);
     this.updated = 0;
+    setDeletedIsSet(false);
+    this.deleted = 0;
     setUpdateSequenceNumIsSet(false);
     this.updateSequenceNum = 0;
     this.notebookGuid = null;
@@ -251,6 +257,28 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
 
   public void setUpdatedIsSet(boolean value) {
     __isset_vector[__UPDATED_ISSET_ID] = value;
+  }
+
+  public long getDeleted() {
+    return this.deleted;
+  }
+
+  public void setDeleted(long deleted) {
+    this.deleted = deleted;
+    setDeletedIsSet(true);
+  }
+
+  public void unsetDeleted() {
+    __isset_vector[__DELETED_ISSET_ID] = false;
+  }
+
+  /** Returns true if field deleted is set (has been asigned a value) and false otherwise */
+  public boolean isSetDeleted() {
+    return __isset_vector[__DELETED_ISSET_ID];
+  }
+
+  public void setDeletedIsSet(boolean value) {
+    __isset_vector[__DELETED_ISSET_ID] = value;
   }
 
   public int getUpdateSequenceNum() {
@@ -462,6 +490,15 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
         return false;
     }
 
+    boolean this_present_deleted = true && this.isSetDeleted();
+    boolean that_present_deleted = true && that.isSetDeleted();
+    if (this_present_deleted || that_present_deleted) {
+      if (!(this_present_deleted && that_present_deleted))
+        return false;
+      if (this.deleted != that.deleted)
+        return false;
+    }
+
     boolean this_present_updateSequenceNum = true && this.isSetUpdateSequenceNum();
     boolean that_present_updateSequenceNum = true && that.isSetUpdateSequenceNum();
     if (this_present_updateSequenceNum || that_present_updateSequenceNum) {
@@ -577,6 +614,15 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetDeleted()).compareTo(typedOther.isSetDeleted());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetDeleted()) {      lastComparison = TBaseHelper.compareTo(this.deleted, typedOther.deleted);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetUpdateSequenceNum()).compareTo(typedOther.isSetUpdateSequenceNum());
     if (lastComparison != 0) {
       return lastComparison;
@@ -682,6 +728,14 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 8: // DELETED
+          if (field.type == TType.I64) {
+            this.deleted = iprot.readI64();
+            setDeletedIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         case 10: // UPDATE_SEQUENCE_NUM
           if (field.type == TType.I32) {
             this.updateSequenceNum = iprot.readI32();
@@ -777,6 +831,11 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
       oprot.writeI64(this.updated);
       oprot.writeFieldEnd();
     }
+    if (isSetDeleted()) {
+      oprot.writeFieldBegin(DELETED_FIELD_DESC);
+      oprot.writeI64(this.deleted);
+      oprot.writeFieldEnd();
+    }
     if (isSetUpdateSequenceNum()) {
       oprot.writeFieldBegin(UPDATE_SEQUENCE_NUM_FIELD_DESC);
       oprot.writeI32(this.updateSequenceNum);
@@ -864,6 +923,12 @@ public class NoteMetadata implements TBase<NoteMetadata>, java.io.Serializable, 
       if (!first) sb.append(", ");
       sb.append("updated:");
       sb.append(this.updated);
+      first = false;
+    }
+    if (isSetDeleted()) {
+      if (!first) sb.append(", ");
+      sb.append("deleted:");
+      sb.append(this.deleted);
       first = false;
     }
     if (isSetUpdateSequenceNum()) {

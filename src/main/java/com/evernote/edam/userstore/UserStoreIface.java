@@ -46,10 +46,9 @@ public interface UserStoreIface {
    * @param clientName
    *   This string provides some information about the client for
    *   tracking/logging on the service.  It should provide information about
-   *   the client's software and platform.  The structure should be:
+   *   the client's software and platform. The structure should be:
    *   application/version; platform/version; [ device/version ]
-   *   E.g.   "Evernote Windows/3.0.1; Windows/XP SP3" or
-   *   "Evernote Clipper/1.0.1; JME/2.0; Motorola RAZR/2.0;
+   *   E.g. "Evernote Windows/3.0.1; Windows/XP SP3".
    * 
    * @param edamVersionMajor
    *   This should be the major protocol version that was compiled by the
@@ -105,9 +104,9 @@ public interface UserStoreIface {
    *   by Evernote.
    * 
    * @return
-   *   The result of the authentication.  If the authentication was successful,
+   *   <p>The result of the authentication.  If the authentication was successful,
    *   the AuthenticationResult.user field will be set with the full information
-   *   about the User.
+   *   about the User.</p>
    * 
    * @throws EDAMUserException <ul>
    *   <li> DATA_REQUIRED "username" - username is empty
@@ -176,9 +175,9 @@ public interface UserStoreIface {
    *   expression EDAM_DEVICE_DESCRIPTION_REGEX.
    * 
    * @return
-   *   The result of the authentication. The level of detail provided in the returned
+   *   <p>The result of the authentication. The level of detail provided in the returned
    *   AuthenticationResult.User structure depends on the access level granted by
-   *   calling application's API key.
+   *   calling application's API key.</p>
    * 
    * @throws EDAMUserException <ul>
    *   <li> DATA_REQUIRED "username" - username is empty
@@ -198,6 +197,26 @@ public interface UserStoreIface {
    * </ul>
    */
   public AuthenticationResult authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
+
+  /**
+   * Revoke an existing long lived authentication token. This can be used to
+   * revoke OAuth tokens or tokens created by calling authenticateLongSession,
+   * and allows a user to effectively log out of Evernote from the perspective
+   * of the application that holds the token. The authentication token that is
+   * passed is immediately revoked and may not be used to call any authenticated
+   * EDAM function.
+   * 
+   * @param authenticationToken the authentication token to revoke.
+   * 
+   * @throws EDAMUserException <ul>
+   *   <li> DATA_REQUIRED "authenticationToken" - no authentication token provided
+   *   <li> BAD_DATA_FORMAT "authenticationToken" - the authentication token is not well formed
+   *   <li> INVALID_AUTH "authenticationToken" - the authentication token is invalid
+   *   <li> AUTH_EXPIRED "authenticationToken" - the authentication token is expired or
+   *     is already revoked.
+   * </ul>
+   */
+  public void revokeLongSession(String authenticationToken) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
 
   /**
    * This is used to take an existing authentication token that grants access

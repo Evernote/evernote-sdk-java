@@ -92,14 +92,15 @@ import com.evernote.thrift.protocol.*;
  *  <dt>unitPrice</dt>
  *    <dd>charge in the smallest unit of the currency (e.g. cents for USD)</dd>
  *  <dt>businessId</dt>
- *    <dd>If set, the ID of the Evernote Business account that the user is a
- *        member of. If not set, the user is not a member of a business.</dd>
+ *    <dd><i>DEPRECATED:</i>See BusinessUserInfo.</dd>
  *  <dt>businessName</dt>
- *    <dd>The human-readable name of the Evernote Business account that
- *        the user is a member of.</dd>
+ *    <dd><i>DEPRECATED:</i>See BusinessUserInfo.</dd>
  *  <dt>businessRole</dt>
- *    <dd>If set, the role of the user within the Evernote Business account
- *        that they are a member of.</dd>
+ *    <dd><i>DEPRECATED:</i>See BusinessUserInfo.</dd>
+ *  <dt>unitDiscount</dt>
+ *    <dd>discount per seat in negative amount and smallest unit of the currency (e.g. cents for USD)</dd>
+ *  <dt>nextChargeDate</dt>
+ *    <dd>The next time the user will be charged, may or may not be the same as nextPaymentDue</dd>
  *  </dl>
  */
 public class Accounting implements TBase<Accounting>, java.io.Serializable, Cloneable {
@@ -126,6 +127,8 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
   private static final TField BUSINESS_ID_FIELD_DESC = new TField("businessId", TType.I32, (short)20);
   private static final TField BUSINESS_NAME_FIELD_DESC = new TField("businessName", TType.STRING, (short)21);
   private static final TField BUSINESS_ROLE_FIELD_DESC = new TField("businessRole", TType.I32, (short)22);
+  private static final TField UNIT_DISCOUNT_FIELD_DESC = new TField("unitDiscount", TType.I32, (short)23);
+  private static final TField NEXT_CHARGE_DATE_FIELD_DESC = new TField("nextChargeDate", TType.I64, (short)24);
 
   private long uploadLimit;
   private long uploadLimitEnd;
@@ -148,6 +151,8 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
   private int businessId;
   private String businessName;
   private BusinessUserRole businessRole;
+  private int unitDiscount;
+  private long nextChargeDate;
 
 
   // isset id assignments
@@ -163,7 +168,9 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
   private static final int __LASTREQUESTEDCHARGE_ISSET_ID = 9;
   private static final int __UNITPRICE_ISSET_ID = 10;
   private static final int __BUSINESSID_ISSET_ID = 11;
-  private boolean[] __isset_vector = new boolean[12];
+  private static final int __UNITDISCOUNT_ISSET_ID = 12;
+  private static final int __NEXTCHARGEDATE_ISSET_ID = 13;
+  private boolean[] __isset_vector = new boolean[14];
 
   public Accounting() {
   }
@@ -212,6 +219,8 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
     if (other.isSetBusinessRole()) {
       this.businessRole = other.businessRole;
     }
+    this.unitDiscount = other.unitDiscount;
+    this.nextChargeDate = other.nextChargeDate;
   }
 
   public Accounting deepCopy() {
@@ -252,6 +261,10 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
     this.businessId = 0;
     this.businessName = null;
     this.businessRole = null;
+    setUnitDiscountIsSet(false);
+    this.unitDiscount = 0;
+    setNextChargeDateIsSet(false);
+    this.nextChargeDate = 0;
   }
 
   public long getUploadLimit() {
@@ -741,6 +754,50 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
     }
   }
 
+  public int getUnitDiscount() {
+    return this.unitDiscount;
+  }
+
+  public void setUnitDiscount(int unitDiscount) {
+    this.unitDiscount = unitDiscount;
+    setUnitDiscountIsSet(true);
+  }
+
+  public void unsetUnitDiscount() {
+    __isset_vector[__UNITDISCOUNT_ISSET_ID] = false;
+  }
+
+  /** Returns true if field unitDiscount is set (has been asigned a value) and false otherwise */
+  public boolean isSetUnitDiscount() {
+    return __isset_vector[__UNITDISCOUNT_ISSET_ID];
+  }
+
+  public void setUnitDiscountIsSet(boolean value) {
+    __isset_vector[__UNITDISCOUNT_ISSET_ID] = value;
+  }
+
+  public long getNextChargeDate() {
+    return this.nextChargeDate;
+  }
+
+  public void setNextChargeDate(long nextChargeDate) {
+    this.nextChargeDate = nextChargeDate;
+    setNextChargeDateIsSet(true);
+  }
+
+  public void unsetNextChargeDate() {
+    __isset_vector[__NEXTCHARGEDATE_ISSET_ID] = false;
+  }
+
+  /** Returns true if field nextChargeDate is set (has been asigned a value) and false otherwise */
+  public boolean isSetNextChargeDate() {
+    return __isset_vector[__NEXTCHARGEDATE_ISSET_ID];
+  }
+
+  public void setNextChargeDateIsSet(boolean value) {
+    __isset_vector[__NEXTCHARGEDATE_ISSET_ID] = value;
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -940,6 +997,24 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
       if (!(this_present_businessRole && that_present_businessRole))
         return false;
       if (!this.businessRole.equals(that.businessRole))
+        return false;
+    }
+
+    boolean this_present_unitDiscount = true && this.isSetUnitDiscount();
+    boolean that_present_unitDiscount = true && that.isSetUnitDiscount();
+    if (this_present_unitDiscount || that_present_unitDiscount) {
+      if (!(this_present_unitDiscount && that_present_unitDiscount))
+        return false;
+      if (this.unitDiscount != that.unitDiscount)
+        return false;
+    }
+
+    boolean this_present_nextChargeDate = true && this.isSetNextChargeDate();
+    boolean that_present_nextChargeDate = true && that.isSetNextChargeDate();
+    if (this_present_nextChargeDate || that_present_nextChargeDate) {
+      if (!(this_present_nextChargeDate && that_present_nextChargeDate))
+        return false;
+      if (this.nextChargeDate != that.nextChargeDate)
         return false;
     }
 
@@ -1148,6 +1223,24 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetUnitDiscount()).compareTo(typedOther.isSetUnitDiscount());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetUnitDiscount()) {      lastComparison = TBaseHelper.compareTo(this.unitDiscount, typedOther.unitDiscount);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetNextChargeDate()).compareTo(typedOther.isSetNextChargeDate());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetNextChargeDate()) {      lastComparison = TBaseHelper.compareTo(this.nextChargeDate, typedOther.nextChargeDate);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -1320,6 +1413,22 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 23: // UNIT_DISCOUNT
+          if (field.type == TType.I32) {
+            this.unitDiscount = iprot.readI32();
+            setUnitDiscountIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 24: // NEXT_CHARGE_DATE
+          if (field.type == TType.I64) {
+            this.nextChargeDate = iprot.readI64();
+            setNextChargeDateIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -1455,6 +1564,16 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
         oprot.writeI32(this.businessRole.getValue());
         oprot.writeFieldEnd();
       }
+    }
+    if (isSetUnitDiscount()) {
+      oprot.writeFieldBegin(UNIT_DISCOUNT_FIELD_DESC);
+      oprot.writeI32(this.unitDiscount);
+      oprot.writeFieldEnd();
+    }
+    if (isSetNextChargeDate()) {
+      oprot.writeFieldBegin(NEXT_CHARGE_DATE_FIELD_DESC);
+      oprot.writeI64(this.nextChargeDate);
+      oprot.writeFieldEnd();
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -1624,6 +1743,18 @@ public class Accounting implements TBase<Accounting>, java.io.Serializable, Clon
       } else {
         sb.append(this.businessRole);
       }
+      first = false;
+    }
+    if (isSetUnitDiscount()) {
+      if (!first) sb.append(", ");
+      sb.append("unitDiscount:");
+      sb.append(this.unitDiscount);
+      first = false;
+    }
+    if (isSetNextChargeDate()) {
+      if (!first) sb.append(", ");
+      sb.append("nextChargeDate:");
+      sb.append(this.nextChargeDate);
       first = false;
     }
     sb.append(")");

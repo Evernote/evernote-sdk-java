@@ -35,6 +35,7 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
   private static final TField INCLUDE_CONTENT_LENGTH_FIELD_DESC = new TField("includeContentLength", TType.BOOL, (short)5);
   private static final TField INCLUDE_CREATED_FIELD_DESC = new TField("includeCreated", TType.BOOL, (short)6);
   private static final TField INCLUDE_UPDATED_FIELD_DESC = new TField("includeUpdated", TType.BOOL, (short)7);
+  private static final TField INCLUDE_DELETED_FIELD_DESC = new TField("includeDeleted", TType.BOOL, (short)8);
   private static final TField INCLUDE_UPDATE_SEQUENCE_NUM_FIELD_DESC = new TField("includeUpdateSequenceNum", TType.BOOL, (short)10);
   private static final TField INCLUDE_NOTEBOOK_GUID_FIELD_DESC = new TField("includeNotebookGuid", TType.BOOL, (short)11);
   private static final TField INCLUDE_TAG_GUIDS_FIELD_DESC = new TField("includeTagGuids", TType.BOOL, (short)12);
@@ -46,6 +47,7 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
   private boolean includeContentLength;
   private boolean includeCreated;
   private boolean includeUpdated;
+  private boolean includeDeleted;
   private boolean includeUpdateSequenceNum;
   private boolean includeNotebookGuid;
   private boolean includeTagGuids;
@@ -59,13 +61,14 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
   private static final int __INCLUDECONTENTLENGTH_ISSET_ID = 1;
   private static final int __INCLUDECREATED_ISSET_ID = 2;
   private static final int __INCLUDEUPDATED_ISSET_ID = 3;
-  private static final int __INCLUDEUPDATESEQUENCENUM_ISSET_ID = 4;
-  private static final int __INCLUDENOTEBOOKGUID_ISSET_ID = 5;
-  private static final int __INCLUDETAGGUIDS_ISSET_ID = 6;
-  private static final int __INCLUDEATTRIBUTES_ISSET_ID = 7;
-  private static final int __INCLUDELARGESTRESOURCEMIME_ISSET_ID = 8;
-  private static final int __INCLUDELARGESTRESOURCESIZE_ISSET_ID = 9;
-  private boolean[] __isset_vector = new boolean[10];
+  private static final int __INCLUDEDELETED_ISSET_ID = 4;
+  private static final int __INCLUDEUPDATESEQUENCENUM_ISSET_ID = 5;
+  private static final int __INCLUDENOTEBOOKGUID_ISSET_ID = 6;
+  private static final int __INCLUDETAGGUIDS_ISSET_ID = 7;
+  private static final int __INCLUDEATTRIBUTES_ISSET_ID = 8;
+  private static final int __INCLUDELARGESTRESOURCEMIME_ISSET_ID = 9;
+  private static final int __INCLUDELARGESTRESOURCESIZE_ISSET_ID = 10;
+  private boolean[] __isset_vector = new boolean[11];
 
   public NotesMetadataResultSpec() {
   }
@@ -79,6 +82,7 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
     this.includeContentLength = other.includeContentLength;
     this.includeCreated = other.includeCreated;
     this.includeUpdated = other.includeUpdated;
+    this.includeDeleted = other.includeDeleted;
     this.includeUpdateSequenceNum = other.includeUpdateSequenceNum;
     this.includeNotebookGuid = other.includeNotebookGuid;
     this.includeTagGuids = other.includeTagGuids;
@@ -100,6 +104,8 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
     this.includeCreated = false;
     setIncludeUpdatedIsSet(false);
     this.includeUpdated = false;
+    setIncludeDeletedIsSet(false);
+    this.includeDeleted = false;
     setIncludeUpdateSequenceNumIsSet(false);
     this.includeUpdateSequenceNum = false;
     setIncludeNotebookGuidIsSet(false);
@@ -200,6 +206,28 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
 
   public void setIncludeUpdatedIsSet(boolean value) {
     __isset_vector[__INCLUDEUPDATED_ISSET_ID] = value;
+  }
+
+  public boolean isIncludeDeleted() {
+    return this.includeDeleted;
+  }
+
+  public void setIncludeDeleted(boolean includeDeleted) {
+    this.includeDeleted = includeDeleted;
+    setIncludeDeletedIsSet(true);
+  }
+
+  public void unsetIncludeDeleted() {
+    __isset_vector[__INCLUDEDELETED_ISSET_ID] = false;
+  }
+
+  /** Returns true if field includeDeleted is set (has been asigned a value) and false otherwise */
+  public boolean isSetIncludeDeleted() {
+    return __isset_vector[__INCLUDEDELETED_ISSET_ID];
+  }
+
+  public void setIncludeDeletedIsSet(boolean value) {
+    __isset_vector[__INCLUDEDELETED_ISSET_ID] = value;
   }
 
   public boolean isIncludeUpdateSequenceNum() {
@@ -383,6 +411,15 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
         return false;
     }
 
+    boolean this_present_includeDeleted = true && this.isSetIncludeDeleted();
+    boolean that_present_includeDeleted = true && that.isSetIncludeDeleted();
+    if (this_present_includeDeleted || that_present_includeDeleted) {
+      if (!(this_present_includeDeleted && that_present_includeDeleted))
+        return false;
+      if (this.includeDeleted != that.includeDeleted)
+        return false;
+    }
+
     boolean this_present_includeUpdateSequenceNum = true && this.isSetIncludeUpdateSequenceNum();
     boolean that_present_includeUpdateSequenceNum = true && that.isSetIncludeUpdateSequenceNum();
     if (this_present_includeUpdateSequenceNum || that_present_includeUpdateSequenceNum) {
@@ -489,6 +526,15 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetIncludeDeleted()).compareTo(typedOther.isSetIncludeDeleted());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetIncludeDeleted()) {      lastComparison = TBaseHelper.compareTo(this.includeDeleted, typedOther.includeDeleted);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetIncludeUpdateSequenceNum()).compareTo(typedOther.isSetIncludeUpdateSequenceNum());
     if (lastComparison != 0) {
       return lastComparison;
@@ -588,6 +634,14 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 8: // INCLUDE_DELETED
+          if (field.type == TType.BOOL) {
+            this.includeDeleted = iprot.readBool();
+            setIncludeDeletedIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         case 10: // INCLUDE_UPDATE_SEQUENCE_NUM
           if (field.type == TType.BOOL) {
             this.includeUpdateSequenceNum = iprot.readBool();
@@ -669,6 +723,11 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
       oprot.writeBool(this.includeUpdated);
       oprot.writeFieldEnd();
     }
+    if (isSetIncludeDeleted()) {
+      oprot.writeFieldBegin(INCLUDE_DELETED_FIELD_DESC);
+      oprot.writeBool(this.includeDeleted);
+      oprot.writeFieldEnd();
+    }
     if (isSetIncludeUpdateSequenceNum()) {
       oprot.writeFieldBegin(INCLUDE_UPDATE_SEQUENCE_NUM_FIELD_DESC);
       oprot.writeBool(this.includeUpdateSequenceNum);
@@ -729,6 +788,12 @@ public class NotesMetadataResultSpec implements TBase<NotesMetadataResultSpec>, 
       if (!first) sb.append(", ");
       sb.append("includeUpdated:");
       sb.append(this.includeUpdated);
+      first = false;
+    }
+    if (isSetIncludeDeleted()) {
+      if (!first) sb.append(", ");
+      sb.append("includeDeleted:");
+      sb.append(this.includeDeleted);
       first = false;
     }
     if (isSetIncludeUpdateSequenceNum()) {
