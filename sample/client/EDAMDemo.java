@@ -118,7 +118,7 @@ public class EDAMDemo {
         com.evernote.edam.userstore.Constants.EDAM_VERSION_MAJOR,
         com.evernote.edam.userstore.Constants.EDAM_VERSION_MINOR);
     if (!versionOk) {
-      System.err.println("Incomatible Evernote client protocol version");
+      System.err.println("Incompatible Evernote client protocol version");
       return false;
     }
     
@@ -302,7 +302,7 @@ public class EDAMDemo {
     noteStore.updateNote(authToken, note);
     System.out.println("Successfully added tag to existing note");
     
-    // To prove that we didn't destory the note, let's fetch it again and
+    // To prove that we didn't destroy the note, let's fetch it again and
     // verify that it still has 1 resource.
     note = noteStore.getNote(authToken, newNoteGuid, false, false, false, false);
     System.out.println("After update, note has " + note.getResourcesSize() + " resource(s)");
