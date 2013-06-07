@@ -8,7 +8,7 @@
   <artifactId>evernote-api</artifactId>
   <packaging>jar</packaging>
   <name>Evernote Web Service API</name>
-  <version>1.24</version>
+  <version>1.24.1</version>
   <description></description>
   <url>http://dev.evernote.com</url>
   <licenses>
@@ -41,6 +41,11 @@
       <name>Seth Hitchings</name>
       <email>shitchings@evernote.com</email>
     </developer>
+    <developer>
+      <id>ksuzuki</id>
+      <name>Kentaro Suzuki</name>
+      <email>ksuzuki@evernote.com</email>
+    </developer>
   </developers>
   
   <issueManagement>
@@ -58,6 +63,15 @@
         <artifactId>maven-jar-plugin</artifactId>
         <groupId>org.apache.maven.plugins</groupId>
         <version>2.4</version>
+        <inherited>true</inherited>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -112,4 +126,18 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

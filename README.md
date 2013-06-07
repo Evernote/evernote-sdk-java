@@ -68,13 +68,13 @@ The code in `sample/client/EDAMDemo.java` demonstrates the basics of using the E
 1. On the command line, run the following command to compile the class:
 
     ```bash
-    $ javac -classpath ../../target/evernote-api-1.23.jar EDAMDemo.java
+    $ javac -classpath ../../target/evernote-api-1.24.1.jar EDAMDemo.java
     ```
 
 1. On the command line, run the following command to execute the sample app:
 
     ```bash
-    $ java -classpath .:../../target/evernote-api-1.23.jar EDAMDemo
+    $ java -classpath .:../../target/evernote-api-1.24.1.jar EDAMDemo
     ````
 
 Sample Code - OAuth
