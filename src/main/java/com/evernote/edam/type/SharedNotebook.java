@@ -69,6 +69,12 @@ import com.evernote.thrift.protocol.*;
  *     an authorization token.  This setting expires after the first use
  *     of authenticateToSharedNotebook(...) with a valid authentication
  *     token.</dd>
+ * 
+ * <dt>recipientSettings</dt>
+ * <dd>Settings intended for use only by the recipient of this shared
+ *     notebook.  You should skip setting this value unless you want
+ *     to change the value contained inside the structure, and only if
+ *     you are the recipient.</dd>
  * </dl>
  */
 public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializable, Cloneable {
@@ -86,6 +92,7 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
   private static final TField USERNAME_FIELD_DESC = new TField("username", TType.STRING, (short)9);
   private static final TField PRIVILEGE_FIELD_DESC = new TField("privilege", TType.I32, (short)11);
   private static final TField ALLOW_PREVIEW_FIELD_DESC = new TField("allowPreview", TType.BOOL, (short)12);
+  private static final TField RECIPIENT_SETTINGS_FIELD_DESC = new TField("recipientSettings", TType.STRUCT, (short)13);
 
   private long id;
   private int userId;
@@ -99,6 +106,7 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
   private String username;
   private SharedNotebookPrivilegeLevel privilege;
   private boolean allowPreview;
+  private SharedNotebookRecipientSettings recipientSettings;
 
 
   // isset id assignments
@@ -141,6 +149,9 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
       this.privilege = other.privilege;
     }
     this.allowPreview = other.allowPreview;
+    if (other.isSetRecipientSettings()) {
+      this.recipientSettings = new SharedNotebookRecipientSettings(other.recipientSettings);
+    }
   }
 
   public SharedNotebook deepCopy() {
@@ -167,6 +178,7 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
     this.privilege = null;
     setAllowPreviewIsSet(false);
     this.allowPreview = false;
+    this.recipientSettings = null;
   }
 
   public long getId() {
@@ -446,6 +458,29 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
     __isset_vector[__ALLOWPREVIEW_ISSET_ID] = value;
   }
 
+  public SharedNotebookRecipientSettings getRecipientSettings() {
+    return this.recipientSettings;
+  }
+
+  public void setRecipientSettings(SharedNotebookRecipientSettings recipientSettings) {
+    this.recipientSettings = recipientSettings;
+  }
+
+  public void unsetRecipientSettings() {
+    this.recipientSettings = null;
+  }
+
+  /** Returns true if field recipientSettings is set (has been asigned a value) and false otherwise */
+  public boolean isSetRecipientSettings() {
+    return this.recipientSettings != null;
+  }
+
+  public void setRecipientSettingsIsSet(boolean value) {
+    if (!value) {
+      this.recipientSettings = null;
+    }
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -564,6 +599,15 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
       if (!(this_present_allowPreview && that_present_allowPreview))
         return false;
       if (this.allowPreview != that.allowPreview)
+        return false;
+    }
+
+    boolean this_present_recipientSettings = true && this.isSetRecipientSettings();
+    boolean that_present_recipientSettings = true && that.isSetRecipientSettings();
+    if (this_present_recipientSettings || that_present_recipientSettings) {
+      if (!(this_present_recipientSettings && that_present_recipientSettings))
+        return false;
+      if (!this.recipientSettings.equals(that.recipientSettings))
         return false;
     }
 
@@ -691,6 +735,15 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetRecipientSettings()).compareTo(typedOther.isSetRecipientSettings());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetRecipientSettings()) {      lastComparison = TBaseHelper.compareTo(this.recipientSettings, typedOther.recipientSettings);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -795,6 +848,14 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 13: // RECIPIENT_SETTINGS
+          if (field.type == TType.STRUCT) {
+            this.recipientSettings = new SharedNotebookRecipientSettings();
+            this.recipientSettings.read(iprot);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -877,6 +938,13 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
       oprot.writeFieldBegin(ALLOW_PREVIEW_FIELD_DESC);
       oprot.writeBool(this.allowPreview);
       oprot.writeFieldEnd();
+    }
+    if (this.recipientSettings != null) {
+      if (isSetRecipientSettings()) {
+        oprot.writeFieldBegin(RECIPIENT_SETTINGS_FIELD_DESC);
+        this.recipientSettings.write(oprot);
+        oprot.writeFieldEnd();
+      }
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -976,6 +1044,16 @@ public class SharedNotebook implements TBase<SharedNotebook>, java.io.Serializab
       if (!first) sb.append(", ");
       sb.append("allowPreview:");
       sb.append(this.allowPreview);
+      first = false;
+    }
+    if (isSetRecipientSettings()) {
+      if (!first) sb.append(", ");
+      sb.append("recipientSettings:");
+      if (this.recipientSettings == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.recipientSettings);
+      }
       first = false;
     }
     sb.append(")");

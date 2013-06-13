@@ -120,13 +120,13 @@ public class UserStore {
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "getBootstrapInfo failed: unknown result");
     }
 
-    public AuthenticationResult authenticate(String username, String password, String consumerKey, String consumerSecret) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
+    public AuthenticationResult authenticate(String username, String password, String consumerKey, String consumerSecret, boolean supportsTwoFactor) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
     {
-      send_authenticate(username, password, consumerKey, consumerSecret);
+      send_authenticate(username, password, consumerKey, consumerSecret, supportsTwoFactor);
       return recv_authenticate();
     }
 
-    public void send_authenticate(String username, String password, String consumerKey, String consumerSecret) throws TException
+    public void send_authenticate(String username, String password, String consumerKey, String consumerSecret, boolean supportsTwoFactor) throws TException
     {
       oprot_.writeMessageBegin(new TMessage("authenticate", TMessageType.CALL, ++seqid_));
       authenticate_args args = new authenticate_args();
@@ -134,6 +134,7 @@ public class UserStore {
       args.setPassword(password);
       args.setConsumerKey(consumerKey);
       args.setConsumerSecret(consumerSecret);
+      args.setSupportsTwoFactor(supportsTwoFactor);
       args.write(oprot_);
       oprot_.writeMessageEnd();
       oprot_.getTransport().flush();
@@ -165,13 +166,13 @@ public class UserStore {
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "authenticate failed: unknown result");
     }
 
-    public AuthenticationResult authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
+    public AuthenticationResult authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription, boolean supportsTwoFactor) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
     {
-      send_authenticateLongSession(username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription);
+      send_authenticateLongSession(username, password, consumerKey, consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor);
       return recv_authenticateLongSession();
     }
 
-    public void send_authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription) throws TException
+    public void send_authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription, boolean supportsTwoFactor) throws TException
     {
       oprot_.writeMessageBegin(new TMessage("authenticateLongSession", TMessageType.CALL, ++seqid_));
       authenticateLongSession_args args = new authenticateLongSession_args();
@@ -181,6 +182,7 @@ public class UserStore {
       args.setConsumerSecret(consumerSecret);
       args.setDeviceIdentifier(deviceIdentifier);
       args.setDeviceDescription(deviceDescription);
+      args.setSupportsTwoFactor(supportsTwoFactor);
       args.write(oprot_);
       oprot_.writeMessageEnd();
       oprot_.getTransport().flush();
@@ -210,6 +212,51 @@ public class UserStore {
         throw result.systemException;
       }
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "authenticateLongSession failed: unknown result");
+    }
+
+    public AuthenticationResult completeTwoFactorAuthentication(String authenticationToken, String oneTimeCode, String deviceIdentifier, String deviceDescription) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
+    {
+      send_completeTwoFactorAuthentication(authenticationToken, oneTimeCode, deviceIdentifier, deviceDescription);
+      return recv_completeTwoFactorAuthentication();
+    }
+
+    public void send_completeTwoFactorAuthentication(String authenticationToken, String oneTimeCode, String deviceIdentifier, String deviceDescription) throws TException
+    {
+      oprot_.writeMessageBegin(new TMessage("completeTwoFactorAuthentication", TMessageType.CALL, ++seqid_));
+      completeTwoFactorAuthentication_args args = new completeTwoFactorAuthentication_args();
+      args.setAuthenticationToken(authenticationToken);
+      args.setOneTimeCode(oneTimeCode);
+      args.setDeviceIdentifier(deviceIdentifier);
+      args.setDeviceDescription(deviceDescription);
+      args.write(oprot_);
+      oprot_.writeMessageEnd();
+      oprot_.getTransport().flush();
+    }
+
+    public AuthenticationResult recv_completeTwoFactorAuthentication() throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
+    {
+      TMessage msg = iprot_.readMessageBegin();
+      if (msg.type == TMessageType.EXCEPTION) {
+        TApplicationException x = TApplicationException.read(iprot_);
+        iprot_.readMessageEnd();
+        throw x;
+      }
+      if (msg.seqid != seqid_) {
+        throw new TApplicationException(TApplicationException.BAD_SEQUENCE_ID, "completeTwoFactorAuthentication failed: out of sequence response");
+      }
+      completeTwoFactorAuthentication_result result = new completeTwoFactorAuthentication_result();
+      result.read(iprot_);
+      iprot_.readMessageEnd();
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.userException != null) {
+        throw result.userException;
+      }
+      if (result.systemException != null) {
+        throw result.systemException;
+      }
+      throw new TApplicationException(TApplicationException.MISSING_RESULT, "completeTwoFactorAuthentication failed: unknown result");
     }
 
     public void revokeLongSession(String authenticationToken) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException
@@ -527,7 +574,7 @@ public class UserStore {
     public checkVersion_args() {
       this.edamVersionMajor = (short)1;
 
-      this.edamVersionMinor = (short)24;
+      this.edamVersionMinor = (short)25;
 
     }
 
@@ -551,7 +598,7 @@ public class UserStore {
       this.clientName = null;
       this.edamVersionMajor = (short)1;
 
-      this.edamVersionMinor = (short)24;
+      this.edamVersionMinor = (short)25;
 
     }
 
@@ -1014,14 +1061,18 @@ public class UserStore {
     private static final TField PASSWORD_FIELD_DESC = new TField("password", TType.STRING, (short)2);
     private static final TField CONSUMER_KEY_FIELD_DESC = new TField("consumerKey", TType.STRING, (short)3);
     private static final TField CONSUMER_SECRET_FIELD_DESC = new TField("consumerSecret", TType.STRING, (short)4);
+    private static final TField SUPPORTS_TWO_FACTOR_FIELD_DESC = new TField("supportsTwoFactor", TType.BOOL, (short)5);
 
     private String username;
     private String password;
     private String consumerKey;
     private String consumerSecret;
+    private boolean supportsTwoFactor;
 
 
     // isset id assignments
+    private static final int __SUPPORTSTWOFACTOR_ISSET_ID = 0;
+    private boolean[] __isset_vector = new boolean[1];
 
     public authenticate_args() {
     }
@@ -1030,6 +1081,7 @@ public class UserStore {
      * Performs a deep copy on <i>other</i>.
      */
     public authenticate_args(authenticate_args other) {
+      System.arraycopy(other.__isset_vector, 0, __isset_vector, 0, other.__isset_vector.length);
       if (other.isSetUsername()) {
         this.username = other.username;
       }
@@ -1042,6 +1094,7 @@ public class UserStore {
       if (other.isSetConsumerSecret()) {
         this.consumerSecret = other.consumerSecret;
       }
+      this.supportsTwoFactor = other.supportsTwoFactor;
     }
 
     public authenticate_args deepCopy() {
@@ -1053,6 +1106,8 @@ public class UserStore {
       this.password = null;
       this.consumerKey = null;
       this.consumerSecret = null;
+      setSupportsTwoFactorIsSet(false);
+      this.supportsTwoFactor = false;
     }
 
     public void setUsername(String username) {
@@ -1089,6 +1144,20 @@ public class UserStore {
     /** Returns true if field consumerSecret is set (has been asigned a value) and false otherwise */
     public boolean isSetConsumerSecret() {
       return this.consumerSecret != null;
+    }
+
+    public void setSupportsTwoFactor(boolean supportsTwoFactor) {
+      this.supportsTwoFactor = supportsTwoFactor;
+      setSupportsTwoFactorIsSet(true);
+    }
+
+    /** Returns true if field supportsTwoFactor is set (has been asigned a value) and false otherwise */
+    public boolean isSetSupportsTwoFactor() {
+      return __isset_vector[__SUPPORTSTWOFACTOR_ISSET_ID];
+    }
+
+    public void setSupportsTwoFactorIsSet(boolean value) {
+      __isset_vector[__SUPPORTSTWOFACTOR_ISSET_ID] = value;
     }
 
     public int compareTo(authenticate_args other) {
@@ -1135,6 +1204,15 @@ public class UserStore {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetSupportsTwoFactor()).compareTo(typedOther.isSetSupportsTwoFactor());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSupportsTwoFactor()) {        lastComparison = TBaseHelper.compareTo(this.supportsTwoFactor, typedOther.supportsTwoFactor);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1176,6 +1254,14 @@ public class UserStore {
               TProtocolUtil.skip(iprot, field.type);
             }
             break;
+          case 5: // SUPPORTS_TWO_FACTOR
+            if (field.type == TType.BOOL) {
+              this.supportsTwoFactor = iprot.readBool();
+              setSupportsTwoFactorIsSet(true);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
           default:
             TProtocolUtil.skip(iprot, field.type);
         }
@@ -1209,6 +1295,9 @@ public class UserStore {
         oprot.writeString(this.consumerSecret);
         oprot.writeFieldEnd();
       }
+      oprot.writeFieldBegin(SUPPORTS_TWO_FACTOR_FIELD_DESC);
+      oprot.writeBool(this.supportsTwoFactor);
+      oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1392,6 +1481,7 @@ public class UserStore {
     private static final TField CONSUMER_SECRET_FIELD_DESC = new TField("consumerSecret", TType.STRING, (short)4);
     private static final TField DEVICE_IDENTIFIER_FIELD_DESC = new TField("deviceIdentifier", TType.STRING, (short)5);
     private static final TField DEVICE_DESCRIPTION_FIELD_DESC = new TField("deviceDescription", TType.STRING, (short)6);
+    private static final TField SUPPORTS_TWO_FACTOR_FIELD_DESC = new TField("supportsTwoFactor", TType.BOOL, (short)7);
 
     private String username;
     private String password;
@@ -1399,9 +1489,12 @@ public class UserStore {
     private String consumerSecret;
     private String deviceIdentifier;
     private String deviceDescription;
+    private boolean supportsTwoFactor;
 
 
     // isset id assignments
+    private static final int __SUPPORTSTWOFACTOR_ISSET_ID = 0;
+    private boolean[] __isset_vector = new boolean[1];
 
     public authenticateLongSession_args() {
     }
@@ -1410,6 +1503,7 @@ public class UserStore {
      * Performs a deep copy on <i>other</i>.
      */
     public authenticateLongSession_args(authenticateLongSession_args other) {
+      System.arraycopy(other.__isset_vector, 0, __isset_vector, 0, other.__isset_vector.length);
       if (other.isSetUsername()) {
         this.username = other.username;
       }
@@ -1428,6 +1522,7 @@ public class UserStore {
       if (other.isSetDeviceDescription()) {
         this.deviceDescription = other.deviceDescription;
       }
+      this.supportsTwoFactor = other.supportsTwoFactor;
     }
 
     public authenticateLongSession_args deepCopy() {
@@ -1441,6 +1536,8 @@ public class UserStore {
       this.consumerSecret = null;
       this.deviceIdentifier = null;
       this.deviceDescription = null;
+      setSupportsTwoFactorIsSet(false);
+      this.supportsTwoFactor = false;
     }
 
     public void setUsername(String username) {
@@ -1495,6 +1592,20 @@ public class UserStore {
     /** Returns true if field deviceDescription is set (has been asigned a value) and false otherwise */
     public boolean isSetDeviceDescription() {
       return this.deviceDescription != null;
+    }
+
+    public void setSupportsTwoFactor(boolean supportsTwoFactor) {
+      this.supportsTwoFactor = supportsTwoFactor;
+      setSupportsTwoFactorIsSet(true);
+    }
+
+    /** Returns true if field supportsTwoFactor is set (has been asigned a value) and false otherwise */
+    public boolean isSetSupportsTwoFactor() {
+      return __isset_vector[__SUPPORTSTWOFACTOR_ISSET_ID];
+    }
+
+    public void setSupportsTwoFactorIsSet(boolean value) {
+      __isset_vector[__SUPPORTSTWOFACTOR_ISSET_ID] = value;
     }
 
     public int compareTo(authenticateLongSession_args other) {
@@ -1559,6 +1670,15 @@ public class UserStore {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetSupportsTwoFactor()).compareTo(typedOther.isSetSupportsTwoFactor());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSupportsTwoFactor()) {        lastComparison = TBaseHelper.compareTo(this.supportsTwoFactor, typedOther.supportsTwoFactor);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1614,6 +1734,14 @@ public class UserStore {
               TProtocolUtil.skip(iprot, field.type);
             }
             break;
+          case 7: // SUPPORTS_TWO_FACTOR
+            if (field.type == TType.BOOL) {
+              this.supportsTwoFactor = iprot.readBool();
+              setSupportsTwoFactorIsSet(true);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
           default:
             TProtocolUtil.skip(iprot, field.type);
         }
@@ -1657,6 +1785,9 @@ public class UserStore {
         oprot.writeString(this.deviceDescription);
         oprot.writeFieldEnd();
       }
+      oprot.writeFieldBegin(SUPPORTS_TWO_FACTOR_FIELD_DESC);
+      oprot.writeBool(this.supportsTwoFactor);
+      oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -1731,6 +1862,382 @@ public class UserStore {
 
       int lastComparison = 0;
       authenticateLongSession_result typedOther = (authenticateLongSession_result)other;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {        lastComparison = TBaseHelper.compareTo(this.success, typedOther.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetUserException()).compareTo(typedOther.isSetUserException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUserException()) {        lastComparison = TBaseHelper.compareTo(this.userException, typedOther.userException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetSystemException()).compareTo(typedOther.isSetSystemException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSystemException()) {        lastComparison = TBaseHelper.compareTo(this.systemException, typedOther.systemException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public void read(TProtocol iprot) throws TException {
+      TField field;
+      iprot.readStructBegin();
+      while (true)
+      {
+        field = iprot.readFieldBegin();
+        if (field.type == TType.STOP) { 
+          break;
+        }
+        switch (field.id) {
+          case 0: // SUCCESS
+            if (field.type == TType.STRUCT) {
+              this.success = new AuthenticationResult();
+              this.success.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 1: // USER_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.userException = new com.evernote.edam.error.EDAMUserException();
+              this.userException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 2: // SYSTEM_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.systemException = new com.evernote.edam.error.EDAMSystemException();
+              this.systemException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          default:
+            TProtocolUtil.skip(iprot, field.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+      validate();
+    }
+
+    public void write(TProtocol oprot) throws TException {
+      oprot.writeStructBegin(STRUCT_DESC);
+
+      if (this.isSetSuccess()) {
+        oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+        this.success.write(oprot);
+        oprot.writeFieldEnd();
+      } else if (this.isSetUserException()) {
+        oprot.writeFieldBegin(USER_EXCEPTION_FIELD_DESC);
+        this.userException.write(oprot);
+        oprot.writeFieldEnd();
+      } else if (this.isSetSystemException()) {
+        oprot.writeFieldBegin(SYSTEM_EXCEPTION_FIELD_DESC);
+        this.systemException.write(oprot);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+    public void validate() throws TException {
+      // check for required fields
+    }
+
+  }
+
+  private static class completeTwoFactorAuthentication_args implements TBase<completeTwoFactorAuthentication_args>, java.io.Serializable, Cloneable   {
+    private static final TStruct STRUCT_DESC = new TStruct("completeTwoFactorAuthentication_args");
+
+    private static final TField AUTHENTICATION_TOKEN_FIELD_DESC = new TField("authenticationToken", TType.STRING, (short)1);
+    private static final TField ONE_TIME_CODE_FIELD_DESC = new TField("oneTimeCode", TType.STRING, (short)2);
+    private static final TField DEVICE_IDENTIFIER_FIELD_DESC = new TField("deviceIdentifier", TType.STRING, (short)3);
+    private static final TField DEVICE_DESCRIPTION_FIELD_DESC = new TField("deviceDescription", TType.STRING, (short)4);
+
+    private String authenticationToken;
+    private String oneTimeCode;
+    private String deviceIdentifier;
+    private String deviceDescription;
+
+
+    // isset id assignments
+
+    public completeTwoFactorAuthentication_args() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public completeTwoFactorAuthentication_args(completeTwoFactorAuthentication_args other) {
+      if (other.isSetAuthenticationToken()) {
+        this.authenticationToken = other.authenticationToken;
+      }
+      if (other.isSetOneTimeCode()) {
+        this.oneTimeCode = other.oneTimeCode;
+      }
+      if (other.isSetDeviceIdentifier()) {
+        this.deviceIdentifier = other.deviceIdentifier;
+      }
+      if (other.isSetDeviceDescription()) {
+        this.deviceDescription = other.deviceDescription;
+      }
+    }
+
+    public completeTwoFactorAuthentication_args deepCopy() {
+      return new completeTwoFactorAuthentication_args(this);
+    }
+
+    public void clear() {
+      this.authenticationToken = null;
+      this.oneTimeCode = null;
+      this.deviceIdentifier = null;
+      this.deviceDescription = null;
+    }
+
+    public void setAuthenticationToken(String authenticationToken) {
+      this.authenticationToken = authenticationToken;
+    }
+
+    /** Returns true if field authenticationToken is set (has been asigned a value) and false otherwise */
+    public boolean isSetAuthenticationToken() {
+      return this.authenticationToken != null;
+    }
+
+    public void setOneTimeCode(String oneTimeCode) {
+      this.oneTimeCode = oneTimeCode;
+    }
+
+    /** Returns true if field oneTimeCode is set (has been asigned a value) and false otherwise */
+    public boolean isSetOneTimeCode() {
+      return this.oneTimeCode != null;
+    }
+
+    public void setDeviceIdentifier(String deviceIdentifier) {
+      this.deviceIdentifier = deviceIdentifier;
+    }
+
+    /** Returns true if field deviceIdentifier is set (has been asigned a value) and false otherwise */
+    public boolean isSetDeviceIdentifier() {
+      return this.deviceIdentifier != null;
+    }
+
+    public void setDeviceDescription(String deviceDescription) {
+      this.deviceDescription = deviceDescription;
+    }
+
+    /** Returns true if field deviceDescription is set (has been asigned a value) and false otherwise */
+    public boolean isSetDeviceDescription() {
+      return this.deviceDescription != null;
+    }
+
+    public int compareTo(completeTwoFactorAuthentication_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      completeTwoFactorAuthentication_args typedOther = (completeTwoFactorAuthentication_args)other;
+
+      lastComparison = Boolean.valueOf(isSetAuthenticationToken()).compareTo(typedOther.isSetAuthenticationToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAuthenticationToken()) {        lastComparison = TBaseHelper.compareTo(this.authenticationToken, typedOther.authenticationToken);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetOneTimeCode()).compareTo(typedOther.isSetOneTimeCode());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOneTimeCode()) {        lastComparison = TBaseHelper.compareTo(this.oneTimeCode, typedOther.oneTimeCode);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetDeviceIdentifier()).compareTo(typedOther.isSetDeviceIdentifier());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetDeviceIdentifier()) {        lastComparison = TBaseHelper.compareTo(this.deviceIdentifier, typedOther.deviceIdentifier);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetDeviceDescription()).compareTo(typedOther.isSetDeviceDescription());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetDeviceDescription()) {        lastComparison = TBaseHelper.compareTo(this.deviceDescription, typedOther.deviceDescription);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public void read(TProtocol iprot) throws TException {
+      TField field;
+      iprot.readStructBegin();
+      while (true)
+      {
+        field = iprot.readFieldBegin();
+        if (field.type == TType.STOP) { 
+          break;
+        }
+        switch (field.id) {
+          case 1: // AUTHENTICATION_TOKEN
+            if (field.type == TType.STRING) {
+              this.authenticationToken = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 2: // ONE_TIME_CODE
+            if (field.type == TType.STRING) {
+              this.oneTimeCode = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 3: // DEVICE_IDENTIFIER
+            if (field.type == TType.STRING) {
+              this.deviceIdentifier = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 4: // DEVICE_DESCRIPTION
+            if (field.type == TType.STRING) {
+              this.deviceDescription = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          default:
+            TProtocolUtil.skip(iprot, field.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+      validate();
+    }
+
+    public void write(TProtocol oprot) throws TException {
+      validate();
+
+      oprot.writeStructBegin(STRUCT_DESC);
+      if (this.authenticationToken != null) {
+        oprot.writeFieldBegin(AUTHENTICATION_TOKEN_FIELD_DESC);
+        oprot.writeString(this.authenticationToken);
+        oprot.writeFieldEnd();
+      }
+      if (this.oneTimeCode != null) {
+        oprot.writeFieldBegin(ONE_TIME_CODE_FIELD_DESC);
+        oprot.writeString(this.oneTimeCode);
+        oprot.writeFieldEnd();
+      }
+      if (this.deviceIdentifier != null) {
+        oprot.writeFieldBegin(DEVICE_IDENTIFIER_FIELD_DESC);
+        oprot.writeString(this.deviceIdentifier);
+        oprot.writeFieldEnd();
+      }
+      if (this.deviceDescription != null) {
+        oprot.writeFieldBegin(DEVICE_DESCRIPTION_FIELD_DESC);
+        oprot.writeString(this.deviceDescription);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+    public void validate() throws TException {
+      // check for required fields
+    }
+
+  }
+
+  private static class completeTwoFactorAuthentication_result implements TBase<completeTwoFactorAuthentication_result>, java.io.Serializable, Cloneable   {
+    private static final TStruct STRUCT_DESC = new TStruct("completeTwoFactorAuthentication_result");
+
+    private static final TField SUCCESS_FIELD_DESC = new TField("success", TType.STRUCT, (short)0);
+    private static final TField USER_EXCEPTION_FIELD_DESC = new TField("userException", TType.STRUCT, (short)1);
+    private static final TField SYSTEM_EXCEPTION_FIELD_DESC = new TField("systemException", TType.STRUCT, (short)2);
+
+    private AuthenticationResult success;
+    private com.evernote.edam.error.EDAMUserException userException;
+    private com.evernote.edam.error.EDAMSystemException systemException;
+
+
+    // isset id assignments
+
+    public completeTwoFactorAuthentication_result() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public completeTwoFactorAuthentication_result(completeTwoFactorAuthentication_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new AuthenticationResult(other.success);
+      }
+      if (other.isSetUserException()) {
+        this.userException = new com.evernote.edam.error.EDAMUserException(other.userException);
+      }
+      if (other.isSetSystemException()) {
+        this.systemException = new com.evernote.edam.error.EDAMSystemException(other.systemException);
+      }
+    }
+
+    public completeTwoFactorAuthentication_result deepCopy() {
+      return new completeTwoFactorAuthentication_result(this);
+    }
+
+    public void clear() {
+      this.success = null;
+      this.userException = null;
+      this.systemException = null;
+    }
+
+    /** Returns true if field success is set (has been asigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    /** Returns true if field userException is set (has been asigned a value) and false otherwise */
+    public boolean isSetUserException() {
+      return this.userException != null;
+    }
+
+    /** Returns true if field systemException is set (has been asigned a value) and false otherwise */
+    public boolean isSetSystemException() {
+      return this.systemException != null;
+    }
+
+    public int compareTo(completeTwoFactorAuthentication_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      completeTwoFactorAuthentication_result typedOther = (completeTwoFactorAuthentication_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {

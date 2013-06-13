@@ -103,10 +103,21 @@ public interface UserStoreIface {
    *   The "consumer secret" portion of the API key issued to the client application
    *   by Evernote.
    * 
+   * @param supportsTwoFactor
+   *   Whether the calling application supports two-factor authentication. If this
+   *   parameter is false, this method will fail with the error code INVALID_AUTH and the
+   *   parameter "password" when called for a user who has enabled two-factor
+   *   authentication.
+   * 
    * @return
    *   <p>The result of the authentication.  If the authentication was successful,
    *   the AuthenticationResult.user field will be set with the full information
    *   about the User.</p>
+   *   <p>If the user has two-factor authentication enabled,
+   *   AuthenticationResult.secondFactorRequired will be set and
+   *   AuthenticationResult.authenticationToken will contain a short-lived token
+   *   that may only be used to complete the two-factor authentication process by calling
+   *   UserStore.completeTwoFactorAuthentication.</p>
    * 
    * @throws EDAMUserException <ul>
    *   <li> DATA_REQUIRED "username" - username is empty
@@ -121,7 +132,7 @@ public interface UserStoreIface {
    *     failed authentication too often
    * </ul>
    */
-  public AuthenticationResult authenticate(String username, String password, String consumerKey, String consumerSecret) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
+  public AuthenticationResult authenticate(String username, String password, String consumerKey, String consumerSecret, boolean supportsTwoFactor) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
 
   /**
    * This is used to check a username and password in order to create a
@@ -174,10 +185,21 @@ public interface UserStoreIface {
    *   EDAM_DEVICE_DESCRIPTION_LEN_MAX characters long and must match the regular
    *   expression EDAM_DEVICE_DESCRIPTION_REGEX.
    * 
+   * @param supportsTwoFactor
+   *   Whether the calling application supports two-factor authentication. If this
+   *   parameter is false, this method will fail with the error code INVALID_AUTH and the
+   *   parameter "password" when called for a user who has enabled two-factor
+   *   authentication.
+   * 
    * @return
    *   <p>The result of the authentication. The level of detail provided in the returned
    *   AuthenticationResult.User structure depends on the access level granted by
    *   calling application's API key.</p>
+   *   <p>If the user has two-factor authentication enabled,
+   *   AuthenticationResult.secondFactorRequired will be set and
+   *   AuthenticationResult.authenticationToken will contain a short-lived token
+   *   that may only be used to complete the two-factor authentication process by calling
+   *   UserStore.completeTwoFactorAuthentication.</p>
    * 
    * @throws EDAMUserException <ul>
    *   <li> DATA_REQUIRED "username" - username is empty
@@ -196,7 +218,46 @@ public interface UserStoreIface {
    *     failed authentication too often
    * </ul>
    */
-  public AuthenticationResult authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
+  public AuthenticationResult authenticateLongSession(String username, String password, String consumerKey, String consumerSecret, String deviceIdentifier, String deviceDescription, boolean supportsTwoFactor) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
+
+  /**
+   * Complete the authentication process when a second factor is required. This
+   * call is made after a successful call to authenticate or authenticateLongSession
+   * when the authenticating user has enabled two-factor authentication.
+   * 
+   * @param authenticationToken An authentication token returned by a previous
+   *   call to UserStore.authenticate or UserStore.authenticateLongSession that
+   *   could not be completed in a single call because a second factor was required.
+   * 
+   * @param oneTimeCode The one time code entered by the user. This value is delivered
+   *   out-of-band, typically via SMS or an authenticator application.
+   * 
+   * @param deviceIdentifier See the corresponding parameter in authenticateLongSession.
+   * 
+   * @param deviceDescription See the corresponding parameter in authenticateLongSession.
+   * 
+   * @return
+   *   The result of the authentication. The level of detail provided in the returned
+   *   AuthenticationResult.User structure depends on the access level granted by the
+   *   calling application's API key. If the initial authentication call was made to
+   *   authenticateLongSession, the AuthenticationResult will contain a long-lived
+   *   authentication token.
+   * 
+   * @throws EDAMUserException <ul>
+   *   <li> DATA_REQUIRED "authenticationToken" - authenticationToken is empty
+   *   <li> DATA_REQUIRED "oneTimeCode" - oneTimeCode is empty
+   *   <li> BAD_DATA_FORMAT "authenticationToken" - authenticationToken is not well formed
+   *   <li> INVALID_AUTH "oneTimeCode" - oneTimeCode did not match
+   *   <li> AUTH_EXPIRED "authenticationToken" - authenticationToken has expired
+   *   <li> PERMISSION_DENIED "authenticationToken" - authenticationToken is not valid
+   *   <li> PERMISSION_DENIED "User.active" - user account is closed
+   *   <li> PERMISSION_DENIED "User.tooManyFailuresTryAgainLater" - user has
+   *     failed authentication too often
+   *   <li> DATA_CONFLICT "User.twoFactorAuthentication" - The user has not enabled
+   *      two-factor authentication.</li>
+   * </ul>
+   */
+  public AuthenticationResult completeTwoFactorAuthentication(String authenticationToken, String oneTimeCode, String deviceIdentifier, String deviceDescription) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMSystemException, TException;
 
   /**
    * Revoke an existing long lived authentication token. This can be used to
