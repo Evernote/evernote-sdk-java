@@ -8,7 +8,7 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0"
 
     val appDependencies = Seq(
-      "com.evernote" % "evernote-api" % "1.23"
+      "com.evernote" % "evernote-api" % "1.25.0"
     )
 
     val main = play.Project(appName, appVersion, appDependencies).settings(

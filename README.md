@@ -1,7 +1,7 @@
 Evernote SDK for Java
 ==========================================
 
-Evernote API version 1.24
+Evernote API version 1.25
 
 
 Overview
@@ -13,6 +13,17 @@ For Android-specific code and samples, see the [Evernote SDK for Android](http:/
 The SDK also contains two samples. The code in `sample/oauth` demonstrates the basic use of the SDK. The code in `sample/client` also demonstrates the basic use of API, but uses developer tokens instead of OAuth for authentication.
 
 JavaDocs for the SDK are available at http://dev.evernote.com/documentation/reference/javadoc/.
+
+Changes in version 1.25
+-----------------------
+
+* Added RelatedQuery.referenceUri
+* New system exceptions thrown by getPublicNotebook and authenticateToSharedNote when the target content has been taken down.
+* Added SharedNotebook.recipientSettings, NoteStore.setSharedNotebookRecipientSettings
+* Added optional authenticationToken parameter to NoteStore.authenticateToSharedNote, only needed for YXBJ
+* Added creatorId and lastEditorId fields to NoteAttributes
+* Added two factor authentication functionality to UserStore.authenticate and authenticateLongSession, added UserStore.completeTwoFactorAuthentication.
+
 
 Changes in version 1.24
 -----------------------
@@ -42,7 +53,7 @@ The easiest way to incorporate the SDK into your Java project is to use Maven. I
 <dependency>
     <groupId>com.evernote</groupId>
     <artifactId>evernote-api</artifactId>
-    <version>1.24</version>
+    <version>1.25.0</version>
 </dependency>
 ```
 
@@ -52,7 +63,7 @@ If you'd prefer to build the SDK yourself, it's as simple as running
 $ mvn package
 ```
 
-You'll find `evernote-sdk-1.24.jar` in the target directory after the build completes. This single JAR contains everything needed to use the API.
+You'll find `evernote-sdk-1.25.0.jar` in the target directory after the build completes. This single JAR contains everything needed to use the API.
 
 Sample Code - Client
 ------------------------
@@ -68,13 +79,13 @@ The code in `sample/client/EDAMDemo.java` demonstrates the basics of using the E
 1. On the command line, run the following command to compile the class:
 
     ```bash
-    $ javac -classpath ../../target/evernote-api-1.23.jar EDAMDemo.java
+    $ javac -classpath ../../target/evernote-api-1.25.0.jar EDAMDemo.java
     ```
 
 1. On the command line, run the following command to execute the sample app:
 
     ```bash
-    $ java -classpath .:../../target/evernote-api-1.23.jar EDAMDemo
+    $ java -classpath .:../../target/evernote-api-1.25.0.jar EDAMDemo
     ````
 
 Sample Code - OAuth
