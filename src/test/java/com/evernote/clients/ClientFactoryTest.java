@@ -40,11 +40,11 @@ public class ClientFactoryTest {
     EvernoteAuth auth = new EvernoteAuth(
         EvernoteService.SANDBOX,
         "S=s1:U=11a1a:E=222b22bbb22:C=33c333c3333:P=4dd:A=en-devtoken:V=2:H=e5555ee5ee55555555eee555ee55e5ee");
-    ClientFactory cf = ClientFactory.getInstance(auth);
+    ClientFactory cf = new ClientFactory(auth);
     String javaVersion = System.getProperty("java.version");
 
     assertNotNull(javaVersion);
-    assertEquals("en-devtoken / 1.24; Java / " + javaVersion,
+    assertEquals("en-devtoken / 1.25; Java / " + javaVersion,
         cf.generateUserAgent());
   }
 

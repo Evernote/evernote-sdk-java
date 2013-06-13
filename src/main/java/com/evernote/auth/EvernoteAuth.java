@@ -39,6 +39,8 @@ public class EvernoteAuth {
 
   private static final String CHARSET = "UTF-8";
   private static final String USER_STORE_PATH = "/edam/user";
+  private static final Pattern TOKEN_REGEX = Pattern
+      .compile("oauth_token=([^&]+)");
   private static final Pattern NOTESTORE_REGEX = Pattern
       .compile("edam_noteStoreUrl=([^&]+)");
   private static final Pattern WEBAPI_REGEX = Pattern
@@ -52,7 +54,7 @@ public class EvernoteAuth {
   private String webApiUrlPrefix;
   private int userId;
 
-  public EvernoteAuth(EvernoteService service, String token) {
+  public EvernoteAuth(final EvernoteService service, final String token) {
     if (service == null || token == null) {
       throw new IllegalArgumentException(
           "EvernoteService and token must not be null.");
@@ -61,31 +63,48 @@ public class EvernoteAuth {
     this.token = token;
   }
 
-  public EvernoteAuth(EvernoteService service, String token, String rawResponse) {
-    if (service == null || token == null) {
+  public EvernoteAuth(final EvernoteService service, final String token,
+      final String noteStoreUrl, final String webApiUrlPrefix, final int userId) {
+    if (service == null || token == null || noteStoreUrl == null
+        || webApiUrlPrefix == null) {
       throw new IllegalArgumentException(
-          "EvernoteService and token must not be null.");
+          "EvernoteService, token, noteStoreUrl and webApiUrlPrefix must not be null.");
     }
     this.service = service;
     this.token = token;
-    this.setNoteStoreUrl(extractNoteStoreUrl(rawResponse));
-    this.webApiUrlPrefix = extractWebApiUrl(rawResponse);
-    this.userId = Integer.parseInt(extractUserId(rawResponse));
+    this.noteStoreUrl = noteStoreUrl;
+    this.webApiUrlPrefix = webApiUrlPrefix;
+    this.userId = userId;
   }
-  
-  String extractNoteStoreUrl(String response) {
+
+  public static EvernoteAuth parseOAuthResponse(final EvernoteService service,
+      final String response) {
+    if (service == null || response == null) {
+      throw new IllegalArgumentException(
+          "EvernoteService and response must not be null.");
+    }
+    return new EvernoteAuth(service, extractToken(response),
+        extractNoteStoreUrl(response), extractWebApiUrl(response),
+        Integer.parseInt(extractUserId(response)));
+  }
+
+  static String extractToken(String response) {
+    return extract(response, TOKEN_REGEX);
+  }
+
+  static String extractNoteStoreUrl(String response) {
     return extract(response, NOTESTORE_REGEX);
   }
 
-  String extractWebApiUrl(String response) {
+  static String extractWebApiUrl(String response) {
     return extract(response, WEBAPI_REGEX);
   }
 
-  String extractUserId(String response) {
+  static String extractUserId(String response) {
     return extract(response, USERID_REGEX);
   }
 
-  private String extract(String response, Pattern p) {
+  private static String extract(String response, Pattern p) {
     Matcher matcher = p.matcher(response);
     if (matcher.find() && matcher.groupCount() >= 1 && matcher.group(1) != null) {
       try {

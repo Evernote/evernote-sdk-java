@@ -53,6 +53,7 @@ import com.evernote.edam.type.Resource;
 import com.evernote.edam.type.ResourceAttributes;
 import com.evernote.edam.type.SavedSearch;
 import com.evernote.edam.type.SharedNotebook;
+import com.evernote.edam.type.SharedNotebookRecipientSettings;
 import com.evernote.edam.type.Tag;
 import com.evernote.edam.userstore.AuthenticationResult;
 import com.evernote.thrift.TException;
@@ -765,9 +766,10 @@ public class NoteStoreClient {
    * @see NoteStore.Client#authenticateToSharedNote(String, String)
    */
   public AuthenticationResult authenticateToSharedNote(String guid,
-      String noteKey) throws EDAMUserException, EDAMNotFoundException,
-      EDAMSystemException, TException {
-    return getClient().authenticateToSharedNote(guid, noteKey);
+      String noteKey, String authenticationToken) throws EDAMUserException,
+      EDAMNotFoundException, EDAMSystemException, TException {
+    return getClient().authenticateToSharedNote(guid, noteKey,
+        authenticationToken);
   }
 
   /**
@@ -779,6 +781,19 @@ public class NoteStoreClient {
       RelatedResultSpec resultSpec) throws EDAMUserException,
       EDAMSystemException, EDAMNotFoundException, TException {
     return getClient().findRelated(getToken(), query, resultSpec);
+  }
+
+  /**
+   * @see NoteStore.Client#setSharedNotebookRecipientSettings(String, long,
+   *      SharedNotebookRecipientSettings)
+   */
+  public void setSharedNotebookRecipientSettings(
+      final String authenticationToken, final long sharedNotebookId,
+      final SharedNotebookRecipientSettings recipientSettings)
+      throws EDAMUserException, EDAMNotFoundException, EDAMSystemException,
+      TException {
+    getClient().setSharedNotebookRecipientSettings(authenticationToken,
+        sharedNotebookId, recipientSettings);
   }
 
 }

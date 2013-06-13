@@ -65,7 +65,7 @@ public class LinkedNoteStoreClientTest {
       Note createdNote = new Note();
       createdNote.setGuid("guid");
       stub(noteStoreClient.createNote(isA(Note.class))).toReturn(createdNote);
-      
+
       NotebookRestrictions restrictions = new NotebookRestrictions();
       restrictions.setNoCreateNotes(false);
 
@@ -93,10 +93,10 @@ public class LinkedNoteStoreClientTest {
           authenticationResult);
     } else {
       EvernoteAuth auth = new EvernoteAuth(EvernoteService.SANDBOX, token);
-      linkedNotebook = ClientFactory.getInstance(auth).createNoteStoreClient()
-          .listLinkedNotebooks().get(0);
-      client = ClientFactory.getInstance(auth).createLinkedNoteStoreClient(
-          linkedNotebook);
+      ClientFactory factory = new ClientFactory(auth);
+      linkedNotebook = factory.createNoteStoreClient().listLinkedNotebooks()
+          .get(0);
+      client = factory.createLinkedNoteStoreClient(linkedNotebook);
     }
   }
 

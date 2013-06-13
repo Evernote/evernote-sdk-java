@@ -109,7 +109,7 @@ public class EDAMDemo {
   public EDAMDemo(String token) throws Exception {
     // Set up the UserStore client and check that we can speak to the server
     EvernoteAuth evernoteAuth = new EvernoteAuth(EvernoteService.SANDBOX, token);
-    ClientFactory factory = ClientFactory.getInstance(evernoteAuth);
+    ClientFactory factory = new ClientFactory(evernoteAuth);
     userStore = factory.createUserStoreClient();
 
     boolean versionOk = userStore.checkVersion("Evernote EDAMDemo (Java)",
@@ -300,7 +300,7 @@ public class EDAMDemo {
     // they won't be changed.
     noteStore.updateNote(note);
     System.out.println("Successfully added tag to existing note");
-    
+
     // To prove that we didn't destroy the note, let's fetch it again and
     // verify that it still has 1 resource.
     note = noteStore.getNote(newNoteGuid, false, false, false, false);

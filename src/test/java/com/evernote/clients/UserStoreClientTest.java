@@ -28,29 +28,23 @@ package com.evernote.clients;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 
-import com.evernote.edam.userstore.UserStore;
+import com.evernote.edam.userstore.UserStoreIface;
 
 public class UserStoreClientTest {
 
-  final Set<String> IGNORE_METHODS = new HashSet<String>(Arrays.asList(
-      "getOutputProtocol", "getInputProtocol"));
-
   @Test
   public void testWrappedMethods() {
-    Method[] originalMethods = UserStore.Client.class.getDeclaredMethods();
+    Method[] originalMethods = UserStoreIface.class.getDeclaredMethods();
     Method[] wrappedMethods = UserStoreClient.class.getDeclaredMethods();
 
     Set<String> originalMethodNames = new HashSet<String>();
     for (Method m : originalMethods) {
-      if (!m.getName().matches("^(send_|recv_).*") && !IGNORE_METHODS.contains(m.getName())) {
-        originalMethodNames.add(m.getName());
-      }
+      originalMethodNames.add(m.getName());
     }
 
     for (Method m : wrappedMethods) {

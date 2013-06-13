@@ -34,7 +34,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.evernote.edam.notestore.NoteStore;
+import com.evernote.edam.notestore.NoteStoreIface;
 
 public class NoteStoreClientTest {
 
@@ -43,14 +43,12 @@ public class NoteStoreClientTest {
 
   @Test
   public void testWrappedMethods() {
-    Method[] originalMethods = NoteStore.Client.class.getDeclaredMethods();
+    Method[] originalMethods = NoteStoreIface.class.getDeclaredMethods();
     Method[] wrappedMethods = NoteStoreClient.class.getDeclaredMethods();
 
     Set<String> originalMethodNames = new HashSet<String>();
     for (Method m : originalMethods) {
-      if (!m.getName().matches("^(send_|recv_).*") && !IGNORE_METHODS.contains(m.getName())) {
-        originalMethodNames.add(m.getName());
-      }
+      originalMethodNames.add(m.getName());
     }
 
     for (Method m : wrappedMethods) {

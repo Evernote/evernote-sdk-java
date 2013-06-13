@@ -119,7 +119,7 @@ if ("".equals(CONSUMER_KEY)) {
         Token scribeRequestToken = new Token(requestToken, requestTokenSecret);
         Verifier scribeVerifier = new Verifier(verifier);
         Token scribeAccessToken = service.getAccessToken(scribeRequestToken, scribeVerifier);
-        EvernoteAuth evernoteAuth = new EvernoteAuth(EVERNOTE_SERVICE, scribeAccessToken.getToken(), scribeAccessToken.getRawResponse());
+        EvernoteAuth evernoteAuth = EvernoteAuth.parseOAuthResponse(EVERNOTE_SERVICE, scribeAccessToken.getRawResponse());
         out.println("<br/><b>Reply:</b> <br/> <span style=\"word-wrap: break-word\">" + scribeAccessToken.getRawResponse() + "</span>");
         accessToken = evernoteAuth.getToken();
         noteStoreUrl = evernoteAuth.getNoteStoreUrl();
@@ -134,7 +134,7 @@ if ("".equals(CONSUMER_KEY)) {
       } else if ("listNotebooks".equals(action)) {
         out.println("Listing notebooks from: " + noteStoreUrl);
         EvernoteAuth evernoteAuth = new EvernoteAuth(EVERNOTE_SERVICE, accessToken);
-        NoteStoreClient noteStoreClient = ClientFactory.getInstance(evernoteAuth).createNoteStoreClient();
+        NoteStoreClient noteStoreClient = new ClientFactory(evernoteAuth).createNoteStoreClient();
         
         List<Notebook> notebooks = noteStoreClient.listNotebooks();
         for (Notebook notebook : notebooks) {

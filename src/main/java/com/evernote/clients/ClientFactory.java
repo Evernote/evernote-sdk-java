@@ -61,15 +61,11 @@ public class ClientFactory {
   /**
    * @param auth
    */
-  private ClientFactory(EvernoteAuth auth) {
+  public ClientFactory(EvernoteAuth auth) {
     if (auth == null) {
       throw new IllegalArgumentException("token must not be null");
     }
     this.evernoteAuth = auth;
-  }
-
-  public static ClientFactory getInstance(EvernoteAuth auth) {
-    return new ClientFactory(auth);
   }
 
   /**

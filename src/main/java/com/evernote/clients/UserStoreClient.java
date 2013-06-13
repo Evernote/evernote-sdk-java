@@ -110,27 +110,27 @@ public class UserStoreClient {
   }
 
   /**
-   * @see UserStore.Client#authenticate(String, String, String, String)
+   * @see UserStore.Client#authenticate(String, String, String, String, boolean)
    */
   public AuthenticationResult authenticate(final String username,
       final String password, final String consumerKey,
-      final String consumerSecret) throws EDAMUserException,
-      EDAMSystemException, TException {
+      final String consumerSecret, final boolean supportsTwoFactor)
+      throws EDAMUserException, EDAMSystemException, TException {
     return getClient().authenticate(username, password, consumerKey,
-        consumerSecret);
+        consumerSecret, supportsTwoFactor);
   }
 
   /**
    * @see UserStore.Client#authenticateLongSession(String, String, String,
-   *      String, String, String)
+   *      String, String, String, boolean)
    */
   public AuthenticationResult authenticateLongSession(final String username,
       final String password, final String consumerKey,
       final String consumerSecret, final String deviceIdentifier,
-      final String deviceDescription) throws EDAMUserException,
-      EDAMSystemException, TException {
+      final String deviceDescription, final boolean supportsTwoFactor)
+      throws EDAMUserException, EDAMSystemException, TException {
     return getClient().authenticateLongSession(username, password, consumerKey,
-        consumerSecret, deviceIdentifier, deviceDescription);
+        consumerSecret, deviceIdentifier, deviceDescription, supportsTwoFactor);
   }
 
   /**
@@ -188,6 +188,18 @@ public class UserStoreClient {
   public void revokeLongSession() throws EDAMUserException,
       EDAMSystemException, TException {
     getClient().revokeLongSession(getToken());
+  }
+
+  /**
+   * @see UserStore.Client#completeTwoFactorAuthentication(String, String,
+   *      String, String)
+   */
+  public void completeTwoFactorAuthentication(final String authenticationToken,
+      final String oneTimeCode, final String deviceIdentifier,
+      final String deviceDescription) throws EDAMUserException,
+      EDAMSystemException, TException {
+    getClient().completeTwoFactorAuthentication(authenticationToken,
+        oneTimeCode, deviceIdentifier, deviceDescription);
   }
 
 }
