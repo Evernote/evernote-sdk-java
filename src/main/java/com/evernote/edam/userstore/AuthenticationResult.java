@@ -65,6 +65,23 @@ import com.evernote.thrift.protocol.*;
  *    end of this string to construct the full URL, as documented on our
  *    developer web site.
  *    </dd>
+ *  <dt>secondFactorRequired:</dt>
+ *    <dd>
+ *    If set to true, this field indicates that the user has enabled two-factor
+ *    authentication and must enter their second factor in order to complete
+ *    authentication. In this case the value of authenticationResult will be
+ *    a short-lived authentication token that may only be used to make a
+ *    subsequent call to completeTwoFactorAuthentication.
+ *    </dd>
+ *  <dt>secondFactorDeliveryHint:</dt>
+ *    <dd>
+ *    When secondFactorRequired is set to true, this field may contain a string
+ *    describing the second factor delivery method that the user has configured.
+ *    This will typically be an obfuscated mobile device number, such as
+ *    "(xxx) xxx-x095". This string can be displayed to the user to remind them
+ *    how to obtain the required second factor.
+ *    TODO do we need to differentiate between SMS and voice delivery?
+ *    </dd>
  *  </dl>
  */
 public class AuthenticationResult implements TBase<AuthenticationResult>, java.io.Serializable, Cloneable {
@@ -77,6 +94,8 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
   private static final TField PUBLIC_USER_INFO_FIELD_DESC = new TField("publicUserInfo", TType.STRUCT, (short)5);
   private static final TField NOTE_STORE_URL_FIELD_DESC = new TField("noteStoreUrl", TType.STRING, (short)6);
   private static final TField WEB_API_URL_PREFIX_FIELD_DESC = new TField("webApiUrlPrefix", TType.STRING, (short)7);
+  private static final TField SECOND_FACTOR_REQUIRED_FIELD_DESC = new TField("secondFactorRequired", TType.BOOL, (short)8);
+  private static final TField SECOND_FACTOR_DELIVERY_HINT_FIELD_DESC = new TField("secondFactorDeliveryHint", TType.STRING, (short)9);
 
   private long currentTime;
   private String authenticationToken;
@@ -85,12 +104,15 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
   private PublicUserInfo publicUserInfo;
   private String noteStoreUrl;
   private String webApiUrlPrefix;
+  private boolean secondFactorRequired;
+  private String secondFactorDeliveryHint;
 
 
   // isset id assignments
   private static final int __CURRENTTIME_ISSET_ID = 0;
   private static final int __EXPIRATION_ISSET_ID = 1;
-  private boolean[] __isset_vector = new boolean[2];
+  private static final int __SECONDFACTORREQUIRED_ISSET_ID = 2;
+  private boolean[] __isset_vector = new boolean[3];
 
   public AuthenticationResult() {
   }
@@ -130,6 +152,10 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
     if (other.isSetWebApiUrlPrefix()) {
       this.webApiUrlPrefix = other.webApiUrlPrefix;
     }
+    this.secondFactorRequired = other.secondFactorRequired;
+    if (other.isSetSecondFactorDeliveryHint()) {
+      this.secondFactorDeliveryHint = other.secondFactorDeliveryHint;
+    }
   }
 
   public AuthenticationResult deepCopy() {
@@ -146,6 +172,9 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
     this.publicUserInfo = null;
     this.noteStoreUrl = null;
     this.webApiUrlPrefix = null;
+    setSecondFactorRequiredIsSet(false);
+    this.secondFactorRequired = false;
+    this.secondFactorDeliveryHint = null;
   }
 
   public long getCurrentTime() {
@@ -307,6 +336,51 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
     }
   }
 
+  public boolean isSecondFactorRequired() {
+    return this.secondFactorRequired;
+  }
+
+  public void setSecondFactorRequired(boolean secondFactorRequired) {
+    this.secondFactorRequired = secondFactorRequired;
+    setSecondFactorRequiredIsSet(true);
+  }
+
+  public void unsetSecondFactorRequired() {
+    __isset_vector[__SECONDFACTORREQUIRED_ISSET_ID] = false;
+  }
+
+  /** Returns true if field secondFactorRequired is set (has been asigned a value) and false otherwise */
+  public boolean isSetSecondFactorRequired() {
+    return __isset_vector[__SECONDFACTORREQUIRED_ISSET_ID];
+  }
+
+  public void setSecondFactorRequiredIsSet(boolean value) {
+    __isset_vector[__SECONDFACTORREQUIRED_ISSET_ID] = value;
+  }
+
+  public String getSecondFactorDeliveryHint() {
+    return this.secondFactorDeliveryHint;
+  }
+
+  public void setSecondFactorDeliveryHint(String secondFactorDeliveryHint) {
+    this.secondFactorDeliveryHint = secondFactorDeliveryHint;
+  }
+
+  public void unsetSecondFactorDeliveryHint() {
+    this.secondFactorDeliveryHint = null;
+  }
+
+  /** Returns true if field secondFactorDeliveryHint is set (has been asigned a value) and false otherwise */
+  public boolean isSetSecondFactorDeliveryHint() {
+    return this.secondFactorDeliveryHint != null;
+  }
+
+  public void setSecondFactorDeliveryHintIsSet(boolean value) {
+    if (!value) {
+      this.secondFactorDeliveryHint = null;
+    }
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -380,6 +454,24 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
       if (!(this_present_webApiUrlPrefix && that_present_webApiUrlPrefix))
         return false;
       if (!this.webApiUrlPrefix.equals(that.webApiUrlPrefix))
+        return false;
+    }
+
+    boolean this_present_secondFactorRequired = true && this.isSetSecondFactorRequired();
+    boolean that_present_secondFactorRequired = true && that.isSetSecondFactorRequired();
+    if (this_present_secondFactorRequired || that_present_secondFactorRequired) {
+      if (!(this_present_secondFactorRequired && that_present_secondFactorRequired))
+        return false;
+      if (this.secondFactorRequired != that.secondFactorRequired)
+        return false;
+    }
+
+    boolean this_present_secondFactorDeliveryHint = true && this.isSetSecondFactorDeliveryHint();
+    boolean that_present_secondFactorDeliveryHint = true && that.isSetSecondFactorDeliveryHint();
+    if (this_present_secondFactorDeliveryHint || that_present_secondFactorDeliveryHint) {
+      if (!(this_present_secondFactorDeliveryHint && that_present_secondFactorDeliveryHint))
+        return false;
+      if (!this.secondFactorDeliveryHint.equals(that.secondFactorDeliveryHint))
         return false;
     }
 
@@ -462,6 +554,24 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetSecondFactorRequired()).compareTo(typedOther.isSetSecondFactorRequired());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetSecondFactorRequired()) {      lastComparison = TBaseHelper.compareTo(this.secondFactorRequired, typedOther.secondFactorRequired);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetSecondFactorDeliveryHint()).compareTo(typedOther.isSetSecondFactorDeliveryHint());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetSecondFactorDeliveryHint()) {      lastComparison = TBaseHelper.compareTo(this.secondFactorDeliveryHint, typedOther.secondFactorDeliveryHint);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -528,6 +638,21 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 8: // SECOND_FACTOR_REQUIRED
+          if (field.type == TType.BOOL) {
+            this.secondFactorRequired = iprot.readBool();
+            setSecondFactorRequiredIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 9: // SECOND_FACTOR_DELIVERY_HINT
+          if (field.type == TType.STRING) {
+            this.secondFactorDeliveryHint = iprot.readString();
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -577,6 +702,18 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
       if (isSetWebApiUrlPrefix()) {
         oprot.writeFieldBegin(WEB_API_URL_PREFIX_FIELD_DESC);
         oprot.writeString(this.webApiUrlPrefix);
+        oprot.writeFieldEnd();
+      }
+    }
+    if (isSetSecondFactorRequired()) {
+      oprot.writeFieldBegin(SECOND_FACTOR_REQUIRED_FIELD_DESC);
+      oprot.writeBool(this.secondFactorRequired);
+      oprot.writeFieldEnd();
+    }
+    if (this.secondFactorDeliveryHint != null) {
+      if (isSetSecondFactorDeliveryHint()) {
+        oprot.writeFieldBegin(SECOND_FACTOR_DELIVERY_HINT_FIELD_DESC);
+        oprot.writeString(this.secondFactorDeliveryHint);
         oprot.writeFieldEnd();
       }
     }
@@ -641,6 +778,22 @@ public class AuthenticationResult implements TBase<AuthenticationResult>, java.i
         sb.append("null");
       } else {
         sb.append(this.webApiUrlPrefix);
+      }
+      first = false;
+    }
+    if (isSetSecondFactorRequired()) {
+      if (!first) sb.append(", ");
+      sb.append("secondFactorRequired:");
+      sb.append(this.secondFactorRequired);
+      first = false;
+    }
+    if (isSetSecondFactorDeliveryHint()) {
+      if (!first) sb.append(", ");
+      sb.append("secondFactorDeliveryHint:");
+      if (this.secondFactorDeliveryHint == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.secondFactorDeliveryHint);
       }
       first = false;
     }

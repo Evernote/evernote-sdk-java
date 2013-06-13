@@ -2802,6 +2802,53 @@ public class NoteStore {
       throw new TApplicationException(TApplicationException.MISSING_RESULT, "updateSharedNotebook failed: unknown result");
     }
 
+    public int setSharedNotebookRecipientSettings(String authenticationToken, long sharedNotebookId, com.evernote.edam.type.SharedNotebookRecipientSettings recipientSettings) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMNotFoundException, com.evernote.edam.error.EDAMSystemException, TException
+    {
+      send_setSharedNotebookRecipientSettings(authenticationToken, sharedNotebookId, recipientSettings);
+      return recv_setSharedNotebookRecipientSettings();
+    }
+
+    public void send_setSharedNotebookRecipientSettings(String authenticationToken, long sharedNotebookId, com.evernote.edam.type.SharedNotebookRecipientSettings recipientSettings) throws TException
+    {
+      oprot_.writeMessageBegin(new TMessage("setSharedNotebookRecipientSettings", TMessageType.CALL, ++seqid_));
+      setSharedNotebookRecipientSettings_args args = new setSharedNotebookRecipientSettings_args();
+      args.setAuthenticationToken(authenticationToken);
+      args.setSharedNotebookId(sharedNotebookId);
+      args.setRecipientSettings(recipientSettings);
+      args.write(oprot_);
+      oprot_.writeMessageEnd();
+      oprot_.getTransport().flush();
+    }
+
+    public int recv_setSharedNotebookRecipientSettings() throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMNotFoundException, com.evernote.edam.error.EDAMSystemException, TException
+    {
+      TMessage msg = iprot_.readMessageBegin();
+      if (msg.type == TMessageType.EXCEPTION) {
+        TApplicationException x = TApplicationException.read(iprot_);
+        iprot_.readMessageEnd();
+        throw x;
+      }
+      if (msg.seqid != seqid_) {
+        throw new TApplicationException(TApplicationException.BAD_SEQUENCE_ID, "setSharedNotebookRecipientSettings failed: out of sequence response");
+      }
+      setSharedNotebookRecipientSettings_result result = new setSharedNotebookRecipientSettings_result();
+      result.read(iprot_);
+      iprot_.readMessageEnd();
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.userException != null) {
+        throw result.userException;
+      }
+      if (result.notFoundException != null) {
+        throw result.notFoundException;
+      }
+      if (result.systemException != null) {
+        throw result.systemException;
+      }
+      throw new TApplicationException(TApplicationException.MISSING_RESULT, "setSharedNotebookRecipientSettings failed: unknown result");
+    }
+
     public int sendMessageToSharedNotebookMembers(String authenticationToken, String notebookGuid, String messageText, List<String> recipients) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMNotFoundException, com.evernote.edam.error.EDAMSystemException, TException
     {
       send_sendMessageToSharedNotebookMembers(authenticationToken, notebookGuid, messageText, recipients);
@@ -3347,18 +3394,19 @@ public class NoteStore {
       return;
     }
 
-    public com.evernote.edam.userstore.AuthenticationResult authenticateToSharedNote(String guid, String noteKey) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMNotFoundException, com.evernote.edam.error.EDAMSystemException, TException
+    public com.evernote.edam.userstore.AuthenticationResult authenticateToSharedNote(String guid, String noteKey, String authenticationToken) throws com.evernote.edam.error.EDAMUserException, com.evernote.edam.error.EDAMNotFoundException, com.evernote.edam.error.EDAMSystemException, TException
     {
-      send_authenticateToSharedNote(guid, noteKey);
+      send_authenticateToSharedNote(guid, noteKey, authenticationToken);
       return recv_authenticateToSharedNote();
     }
 
-    public void send_authenticateToSharedNote(String guid, String noteKey) throws TException
+    public void send_authenticateToSharedNote(String guid, String noteKey, String authenticationToken) throws TException
     {
       oprot_.writeMessageBegin(new TMessage("authenticateToSharedNote", TMessageType.CALL, ++seqid_));
       authenticateToSharedNote_args args = new authenticateToSharedNote_args();
       args.setGuid(guid);
       args.setNoteKey(noteKey);
+      args.setAuthenticationToken(authenticationToken);
       args.write(oprot_);
       oprot_.writeMessageEnd();
       oprot_.getTransport().flush();
@@ -24857,6 +24905,391 @@ public class NoteStore {
 
   }
 
+  private static class setSharedNotebookRecipientSettings_args implements TBase<setSharedNotebookRecipientSettings_args>, java.io.Serializable, Cloneable   {
+    private static final TStruct STRUCT_DESC = new TStruct("setSharedNotebookRecipientSettings_args");
+
+    private static final TField AUTHENTICATION_TOKEN_FIELD_DESC = new TField("authenticationToken", TType.STRING, (short)1);
+    private static final TField SHARED_NOTEBOOK_ID_FIELD_DESC = new TField("sharedNotebookId", TType.I64, (short)2);
+    private static final TField RECIPIENT_SETTINGS_FIELD_DESC = new TField("recipientSettings", TType.STRUCT, (short)3);
+
+    private String authenticationToken;
+    private long sharedNotebookId;
+    private com.evernote.edam.type.SharedNotebookRecipientSettings recipientSettings;
+
+
+    // isset id assignments
+    private static final int __SHAREDNOTEBOOKID_ISSET_ID = 0;
+    private boolean[] __isset_vector = new boolean[1];
+
+    public setSharedNotebookRecipientSettings_args() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public setSharedNotebookRecipientSettings_args(setSharedNotebookRecipientSettings_args other) {
+      System.arraycopy(other.__isset_vector, 0, __isset_vector, 0, other.__isset_vector.length);
+      if (other.isSetAuthenticationToken()) {
+        this.authenticationToken = other.authenticationToken;
+      }
+      this.sharedNotebookId = other.sharedNotebookId;
+      if (other.isSetRecipientSettings()) {
+        this.recipientSettings = new com.evernote.edam.type.SharedNotebookRecipientSettings(other.recipientSettings);
+      }
+    }
+
+    public setSharedNotebookRecipientSettings_args deepCopy() {
+      return new setSharedNotebookRecipientSettings_args(this);
+    }
+
+    public void clear() {
+      this.authenticationToken = null;
+      setSharedNotebookIdIsSet(false);
+      this.sharedNotebookId = 0;
+      this.recipientSettings = null;
+    }
+
+    public void setAuthenticationToken(String authenticationToken) {
+      this.authenticationToken = authenticationToken;
+    }
+
+    /** Returns true if field authenticationToken is set (has been asigned a value) and false otherwise */
+    public boolean isSetAuthenticationToken() {
+      return this.authenticationToken != null;
+    }
+
+    public void setSharedNotebookId(long sharedNotebookId) {
+      this.sharedNotebookId = sharedNotebookId;
+      setSharedNotebookIdIsSet(true);
+    }
+
+    /** Returns true if field sharedNotebookId is set (has been asigned a value) and false otherwise */
+    public boolean isSetSharedNotebookId() {
+      return __isset_vector[__SHAREDNOTEBOOKID_ISSET_ID];
+    }
+
+    public void setSharedNotebookIdIsSet(boolean value) {
+      __isset_vector[__SHAREDNOTEBOOKID_ISSET_ID] = value;
+    }
+
+    public void setRecipientSettings(com.evernote.edam.type.SharedNotebookRecipientSettings recipientSettings) {
+      this.recipientSettings = recipientSettings;
+    }
+
+    /** Returns true if field recipientSettings is set (has been asigned a value) and false otherwise */
+    public boolean isSetRecipientSettings() {
+      return this.recipientSettings != null;
+    }
+
+    public int compareTo(setSharedNotebookRecipientSettings_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      setSharedNotebookRecipientSettings_args typedOther = (setSharedNotebookRecipientSettings_args)other;
+
+      lastComparison = Boolean.valueOf(isSetAuthenticationToken()).compareTo(typedOther.isSetAuthenticationToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAuthenticationToken()) {        lastComparison = TBaseHelper.compareTo(this.authenticationToken, typedOther.authenticationToken);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetSharedNotebookId()).compareTo(typedOther.isSetSharedNotebookId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSharedNotebookId()) {        lastComparison = TBaseHelper.compareTo(this.sharedNotebookId, typedOther.sharedNotebookId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetRecipientSettings()).compareTo(typedOther.isSetRecipientSettings());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetRecipientSettings()) {        lastComparison = TBaseHelper.compareTo(this.recipientSettings, typedOther.recipientSettings);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public void read(TProtocol iprot) throws TException {
+      TField field;
+      iprot.readStructBegin();
+      while (true)
+      {
+        field = iprot.readFieldBegin();
+        if (field.type == TType.STOP) { 
+          break;
+        }
+        switch (field.id) {
+          case 1: // AUTHENTICATION_TOKEN
+            if (field.type == TType.STRING) {
+              this.authenticationToken = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 2: // SHARED_NOTEBOOK_ID
+            if (field.type == TType.I64) {
+              this.sharedNotebookId = iprot.readI64();
+              setSharedNotebookIdIsSet(true);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 3: // RECIPIENT_SETTINGS
+            if (field.type == TType.STRUCT) {
+              this.recipientSettings = new com.evernote.edam.type.SharedNotebookRecipientSettings();
+              this.recipientSettings.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          default:
+            TProtocolUtil.skip(iprot, field.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+      validate();
+    }
+
+    public void write(TProtocol oprot) throws TException {
+      validate();
+
+      oprot.writeStructBegin(STRUCT_DESC);
+      if (this.authenticationToken != null) {
+        oprot.writeFieldBegin(AUTHENTICATION_TOKEN_FIELD_DESC);
+        oprot.writeString(this.authenticationToken);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldBegin(SHARED_NOTEBOOK_ID_FIELD_DESC);
+      oprot.writeI64(this.sharedNotebookId);
+      oprot.writeFieldEnd();
+      if (this.recipientSettings != null) {
+        oprot.writeFieldBegin(RECIPIENT_SETTINGS_FIELD_DESC);
+        this.recipientSettings.write(oprot);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+    public void validate() throws TException {
+      // check for required fields
+    }
+
+  }
+
+  private static class setSharedNotebookRecipientSettings_result implements TBase<setSharedNotebookRecipientSettings_result>, java.io.Serializable, Cloneable   {
+    private static final TStruct STRUCT_DESC = new TStruct("setSharedNotebookRecipientSettings_result");
+
+    private static final TField SUCCESS_FIELD_DESC = new TField("success", TType.I32, (short)0);
+    private static final TField USER_EXCEPTION_FIELD_DESC = new TField("userException", TType.STRUCT, (short)1);
+    private static final TField NOT_FOUND_EXCEPTION_FIELD_DESC = new TField("notFoundException", TType.STRUCT, (short)2);
+    private static final TField SYSTEM_EXCEPTION_FIELD_DESC = new TField("systemException", TType.STRUCT, (short)3);
+
+    private int success;
+    private com.evernote.edam.error.EDAMUserException userException;
+    private com.evernote.edam.error.EDAMNotFoundException notFoundException;
+    private com.evernote.edam.error.EDAMSystemException systemException;
+
+
+    // isset id assignments
+    private static final int __SUCCESS_ISSET_ID = 0;
+    private boolean[] __isset_vector = new boolean[1];
+
+    public setSharedNotebookRecipientSettings_result() {
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public setSharedNotebookRecipientSettings_result(setSharedNotebookRecipientSettings_result other) {
+      System.arraycopy(other.__isset_vector, 0, __isset_vector, 0, other.__isset_vector.length);
+      this.success = other.success;
+      if (other.isSetUserException()) {
+        this.userException = new com.evernote.edam.error.EDAMUserException(other.userException);
+      }
+      if (other.isSetNotFoundException()) {
+        this.notFoundException = new com.evernote.edam.error.EDAMNotFoundException(other.notFoundException);
+      }
+      if (other.isSetSystemException()) {
+        this.systemException = new com.evernote.edam.error.EDAMSystemException(other.systemException);
+      }
+    }
+
+    public setSharedNotebookRecipientSettings_result deepCopy() {
+      return new setSharedNotebookRecipientSettings_result(this);
+    }
+
+    public void clear() {
+      setSuccessIsSet(false);
+      this.success = 0;
+      this.userException = null;
+      this.notFoundException = null;
+      this.systemException = null;
+    }
+
+    /** Returns true if field success is set (has been asigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return __isset_vector[__SUCCESS_ISSET_ID];
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      __isset_vector[__SUCCESS_ISSET_ID] = value;
+    }
+
+    /** Returns true if field userException is set (has been asigned a value) and false otherwise */
+    public boolean isSetUserException() {
+      return this.userException != null;
+    }
+
+    /** Returns true if field notFoundException is set (has been asigned a value) and false otherwise */
+    public boolean isSetNotFoundException() {
+      return this.notFoundException != null;
+    }
+
+    /** Returns true if field systemException is set (has been asigned a value) and false otherwise */
+    public boolean isSetSystemException() {
+      return this.systemException != null;
+    }
+
+    public int compareTo(setSharedNotebookRecipientSettings_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      setSharedNotebookRecipientSettings_result typedOther = (setSharedNotebookRecipientSettings_result)other;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {        lastComparison = TBaseHelper.compareTo(this.success, typedOther.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetUserException()).compareTo(typedOther.isSetUserException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUserException()) {        lastComparison = TBaseHelper.compareTo(this.userException, typedOther.userException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetNotFoundException()).compareTo(typedOther.isSetNotFoundException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetNotFoundException()) {        lastComparison = TBaseHelper.compareTo(this.notFoundException, typedOther.notFoundException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetSystemException()).compareTo(typedOther.isSetSystemException());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSystemException()) {        lastComparison = TBaseHelper.compareTo(this.systemException, typedOther.systemException);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public void read(TProtocol iprot) throws TException {
+      TField field;
+      iprot.readStructBegin();
+      while (true)
+      {
+        field = iprot.readFieldBegin();
+        if (field.type == TType.STOP) { 
+          break;
+        }
+        switch (field.id) {
+          case 0: // SUCCESS
+            if (field.type == TType.I32) {
+              this.success = iprot.readI32();
+              setSuccessIsSet(true);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 1: // USER_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.userException = new com.evernote.edam.error.EDAMUserException();
+              this.userException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 2: // NOT_FOUND_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.notFoundException = new com.evernote.edam.error.EDAMNotFoundException();
+              this.notFoundException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          case 3: // SYSTEM_EXCEPTION
+            if (field.type == TType.STRUCT) {
+              this.systemException = new com.evernote.edam.error.EDAMSystemException();
+              this.systemException.read(iprot);
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
+          default:
+            TProtocolUtil.skip(iprot, field.type);
+        }
+        iprot.readFieldEnd();
+      }
+      iprot.readStructEnd();
+      validate();
+    }
+
+    public void write(TProtocol oprot) throws TException {
+      oprot.writeStructBegin(STRUCT_DESC);
+
+      if (this.isSetSuccess()) {
+        oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+        oprot.writeI32(this.success);
+        oprot.writeFieldEnd();
+      } else if (this.isSetUserException()) {
+        oprot.writeFieldBegin(USER_EXCEPTION_FIELD_DESC);
+        this.userException.write(oprot);
+        oprot.writeFieldEnd();
+      } else if (this.isSetNotFoundException()) {
+        oprot.writeFieldBegin(NOT_FOUND_EXCEPTION_FIELD_DESC);
+        this.notFoundException.write(oprot);
+        oprot.writeFieldEnd();
+      } else if (this.isSetSystemException()) {
+        oprot.writeFieldBegin(SYSTEM_EXCEPTION_FIELD_DESC);
+        this.systemException.write(oprot);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldStop();
+      oprot.writeStructEnd();
+    }
+
+    public void validate() throws TException {
+      // check for required fields
+    }
+
+  }
+
   private static class sendMessageToSharedNotebookMembers_args implements TBase<sendMessageToSharedNotebookMembers_args>, java.io.Serializable, Cloneable   {
     private static final TStruct STRUCT_DESC = new TStruct("sendMessageToSharedNotebookMembers_args");
 
@@ -28904,9 +29337,11 @@ public class NoteStore {
 
     private static final TField GUID_FIELD_DESC = new TField("guid", TType.STRING, (short)1);
     private static final TField NOTE_KEY_FIELD_DESC = new TField("noteKey", TType.STRING, (short)2);
+    private static final TField AUTHENTICATION_TOKEN_FIELD_DESC = new TField("authenticationToken", TType.STRING, (short)3);
 
     private String guid;
     private String noteKey;
+    private String authenticationToken;
 
 
     // isset id assignments
@@ -28924,6 +29359,9 @@ public class NoteStore {
       if (other.isSetNoteKey()) {
         this.noteKey = other.noteKey;
       }
+      if (other.isSetAuthenticationToken()) {
+        this.authenticationToken = other.authenticationToken;
+      }
     }
 
     public authenticateToSharedNote_args deepCopy() {
@@ -28933,6 +29371,7 @@ public class NoteStore {
     public void clear() {
       this.guid = null;
       this.noteKey = null;
+      this.authenticationToken = null;
     }
 
     public void setGuid(String guid) {
@@ -28951,6 +29390,15 @@ public class NoteStore {
     /** Returns true if field noteKey is set (has been asigned a value) and false otherwise */
     public boolean isSetNoteKey() {
       return this.noteKey != null;
+    }
+
+    public void setAuthenticationToken(String authenticationToken) {
+      this.authenticationToken = authenticationToken;
+    }
+
+    /** Returns true if field authenticationToken is set (has been asigned a value) and false otherwise */
+    public boolean isSetAuthenticationToken() {
+      return this.authenticationToken != null;
     }
 
     public int compareTo(authenticateToSharedNote_args other) {
@@ -28975,6 +29423,15 @@ public class NoteStore {
         return lastComparison;
       }
       if (isSetNoteKey()) {        lastComparison = TBaseHelper.compareTo(this.noteKey, typedOther.noteKey);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetAuthenticationToken()).compareTo(typedOther.isSetAuthenticationToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAuthenticationToken()) {        lastComparison = TBaseHelper.compareTo(this.authenticationToken, typedOther.authenticationToken);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -29006,6 +29463,13 @@ public class NoteStore {
               TProtocolUtil.skip(iprot, field.type);
             }
             break;
+          case 3: // AUTHENTICATION_TOKEN
+            if (field.type == TType.STRING) {
+              this.authenticationToken = iprot.readString();
+            } else { 
+              TProtocolUtil.skip(iprot, field.type);
+            }
+            break;
           default:
             TProtocolUtil.skip(iprot, field.type);
         }
@@ -29027,6 +29491,11 @@ public class NoteStore {
       if (this.noteKey != null) {
         oprot.writeFieldBegin(NOTE_KEY_FIELD_DESC);
         oprot.writeString(this.noteKey);
+        oprot.writeFieldEnd();
+      }
+      if (this.authenticationToken != null) {
+        oprot.writeFieldBegin(AUTHENTICATION_TOKEN_FIELD_DESC);
+        oprot.writeString(this.authenticationToken);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();

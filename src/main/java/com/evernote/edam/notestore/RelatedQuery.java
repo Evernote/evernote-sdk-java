@@ -20,7 +20,7 @@ import com.evernote.thrift.protocol.*;
  * entities.
  * 
  * You must specify either <em>noteGuid</em> or <em>plainText</em>, but
- * not both. <em>filter</em> is optional.
+ * not both. <em>filter</em> and <em>referenceUri</em> are optional.
  * 
  * <dl>
  * <dt>noteGuid</dt>
@@ -39,6 +39,11 @@ import com.evernote.thrift.protocol.*;
  *     Please note that some of the parameters may be ignored, such as
  *     <em>order</em> and <em>ascending</em>.
  * </dd>
+ * 
+ * <dt>referenceUri</dt>
+ * <dd>A URI string specifying a reference entity, around which "relatedness"
+ *     should be based. This can be an URL pointing to a web page, for example.
+ * </dd>
  * </dl>
  */
 public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, Cloneable {
@@ -47,10 +52,12 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
   private static final TField NOTE_GUID_FIELD_DESC = new TField("noteGuid", TType.STRING, (short)1);
   private static final TField PLAIN_TEXT_FIELD_DESC = new TField("plainText", TType.STRING, (short)2);
   private static final TField FILTER_FIELD_DESC = new TField("filter", TType.STRUCT, (short)3);
+  private static final TField REFERENCE_URI_FIELD_DESC = new TField("referenceUri", TType.STRING, (short)4);
 
   private String noteGuid;
   private String plainText;
   private NoteFilter filter;
+  private String referenceUri;
 
 
   // isset id assignments
@@ -71,6 +78,9 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
     if (other.isSetFilter()) {
       this.filter = new NoteFilter(other.filter);
     }
+    if (other.isSetReferenceUri()) {
+      this.referenceUri = other.referenceUri;
+    }
   }
 
   public RelatedQuery deepCopy() {
@@ -81,6 +91,7 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
     this.noteGuid = null;
     this.plainText = null;
     this.filter = null;
+    this.referenceUri = null;
   }
 
   public String getNoteGuid() {
@@ -152,6 +163,29 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
     }
   }
 
+  public String getReferenceUri() {
+    return this.referenceUri;
+  }
+
+  public void setReferenceUri(String referenceUri) {
+    this.referenceUri = referenceUri;
+  }
+
+  public void unsetReferenceUri() {
+    this.referenceUri = null;
+  }
+
+  /** Returns true if field referenceUri is set (has been asigned a value) and false otherwise */
+  public boolean isSetReferenceUri() {
+    return this.referenceUri != null;
+  }
+
+  public void setReferenceUriIsSet(boolean value) {
+    if (!value) {
+      this.referenceUri = null;
+    }
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -189,6 +223,15 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
       if (!(this_present_filter && that_present_filter))
         return false;
       if (!this.filter.equals(that.filter))
+        return false;
+    }
+
+    boolean this_present_referenceUri = true && this.isSetReferenceUri();
+    boolean that_present_referenceUri = true && that.isSetReferenceUri();
+    if (this_present_referenceUri || that_present_referenceUri) {
+      if (!(this_present_referenceUri && that_present_referenceUri))
+        return false;
+      if (!this.referenceUri.equals(that.referenceUri))
         return false;
     }
 
@@ -235,6 +278,15 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetReferenceUri()).compareTo(typedOther.isSetReferenceUri());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReferenceUri()) {      lastComparison = TBaseHelper.compareTo(this.referenceUri, typedOther.referenceUri);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -266,6 +318,13 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
           if (field.type == TType.STRUCT) {
             this.filter = new NoteFilter();
             this.filter.read(iprot);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 4: // REFERENCE_URI
+          if (field.type == TType.STRING) {
+            this.referenceUri = iprot.readString();
           } else { 
             TProtocolUtil.skip(iprot, field.type);
           }
@@ -304,6 +363,13 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
         oprot.writeFieldEnd();
       }
     }
+    if (this.referenceUri != null) {
+      if (isSetReferenceUri()) {
+        oprot.writeFieldBegin(REFERENCE_URI_FIELD_DESC);
+        oprot.writeString(this.referenceUri);
+        oprot.writeFieldEnd();
+      }
+    }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
   }
@@ -339,6 +405,16 @@ public class RelatedQuery implements TBase<RelatedQuery>, java.io.Serializable, 
         sb.append("null");
       } else {
         sb.append(this.filter);
+      }
+      first = false;
+    }
+    if (isSetReferenceUri()) {
+      if (!first) sb.append(", ");
+      sb.append("referenceUri:");
+      if (this.referenceUri == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.referenceUri);
       }
       first = false;
     }

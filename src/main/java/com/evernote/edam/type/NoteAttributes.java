@@ -132,8 +132,8 @@ import com.evernote.thrift.protocol.*;
  * the client MUST treat the note as read-only. In this case, the
  * client MAY modify the note's notebook and tags via the
  * Note.notebookGuid and Note.tagGuids fields.  The client MAY also
- * modify the pinProminence field as well as the reminderTime and
- * reminderDismissTime fields.
+ * modify the reminderOrder field as well as the reminderTime and
+ * reminderDoneTime fields.
  * <p>Applications should set contentClass only when they are creating notes
  * that contain structured information that needs to be maintained in order
  * for the user to be able to use the note within that application.
@@ -163,6 +163,9 @@ import com.evernote.thrift.protocol.*;
  * Syntax regex for name (key): EDAM_APPLICATIONDATA_NAME_REGEX
  * </dd>
  * 
+ * <dt>creatorId</dt>
+ * <dd>The numeric user ID of the user who originally created the note.</dd>
+ * 
  * <dt>lastEditedBy</dt>
  * <dd>An indication of who made the last change to the note.  If you are
  * accessing the note via a shared notebook to which you have modification
@@ -173,6 +176,9 @@ import com.evernote.thrift.protocol.*;
  * guest who made the last edit.  If you do not have access to this value,
  * it will be left unset.  This field is read-only by clients.  The server
  * will ignore all values set by clients into this field.</dd>
+ * 
+ * <dt>lastEditorId</dt>
+ * <dd>The numeric user ID of the user described in lastEditedBy.</dd>
  * 
  * <dt>classifications</dt>
  * <dd>A map of classifications applied to the note by clients or by the
@@ -201,6 +207,8 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
   private static final TField APPLICATION_DATA_FIELD_DESC = new TField("applicationData", TType.STRUCT, (short)23);
   private static final TField LAST_EDITED_BY_FIELD_DESC = new TField("lastEditedBy", TType.STRING, (short)24);
   private static final TField CLASSIFICATIONS_FIELD_DESC = new TField("classifications", TType.MAP, (short)26);
+  private static final TField CREATOR_ID_FIELD_DESC = new TField("creatorId", TType.I32, (short)27);
+  private static final TField LAST_EDITOR_ID_FIELD_DESC = new TField("lastEditorId", TType.I32, (short)28);
 
   private long subjectDate;
   private double latitude;
@@ -219,6 +227,8 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
   private LazyMap applicationData;
   private String lastEditedBy;
   private Map<String,String> classifications;
+  private int creatorId;
+  private int lastEditorId;
 
 
   // isset id assignments
@@ -230,7 +240,9 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
   private static final int __REMINDERORDER_ISSET_ID = 5;
   private static final int __REMINDERDONETIME_ISSET_ID = 6;
   private static final int __REMINDERTIME_ISSET_ID = 7;
-  private boolean[] __isset_vector = new boolean[8];
+  private static final int __CREATORID_ISSET_ID = 8;
+  private static final int __LASTEDITORID_ISSET_ID = 9;
+  private boolean[] __isset_vector = new boolean[10];
 
   public NoteAttributes() {
   }
@@ -287,6 +299,8 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
       }
       this.classifications = __this__classifications;
     }
+    this.creatorId = other.creatorId;
+    this.lastEditorId = other.lastEditorId;
   }
 
   public NoteAttributes deepCopy() {
@@ -319,6 +333,10 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
     this.applicationData = null;
     this.lastEditedBy = null;
     this.classifications = null;
+    setCreatorIdIsSet(false);
+    this.creatorId = 0;
+    setLastEditorIdIsSet(false);
+    this.lastEditorId = 0;
   }
 
   public long getSubjectDate() {
@@ -715,6 +733,50 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
     }
   }
 
+  public int getCreatorId() {
+    return this.creatorId;
+  }
+
+  public void setCreatorId(int creatorId) {
+    this.creatorId = creatorId;
+    setCreatorIdIsSet(true);
+  }
+
+  public void unsetCreatorId() {
+    __isset_vector[__CREATORID_ISSET_ID] = false;
+  }
+
+  /** Returns true if field creatorId is set (has been asigned a value) and false otherwise */
+  public boolean isSetCreatorId() {
+    return __isset_vector[__CREATORID_ISSET_ID];
+  }
+
+  public void setCreatorIdIsSet(boolean value) {
+    __isset_vector[__CREATORID_ISSET_ID] = value;
+  }
+
+  public int getLastEditorId() {
+    return this.lastEditorId;
+  }
+
+  public void setLastEditorId(int lastEditorId) {
+    this.lastEditorId = lastEditorId;
+    setLastEditorIdIsSet(true);
+  }
+
+  public void unsetLastEditorId() {
+    __isset_vector[__LASTEDITORID_ISSET_ID] = false;
+  }
+
+  /** Returns true if field lastEditorId is set (has been asigned a value) and false otherwise */
+  public boolean isSetLastEditorId() {
+    return __isset_vector[__LASTEDITORID_ISSET_ID];
+  }
+
+  public void setLastEditorIdIsSet(boolean value) {
+    __isset_vector[__LASTEDITORID_ISSET_ID] = value;
+  }
+
   @Override
   public boolean equals(Object that) {
     if (that == null)
@@ -878,6 +940,24 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
       if (!(this_present_classifications && that_present_classifications))
         return false;
       if (!this.classifications.equals(that.classifications))
+        return false;
+    }
+
+    boolean this_present_creatorId = true && this.isSetCreatorId();
+    boolean that_present_creatorId = true && that.isSetCreatorId();
+    if (this_present_creatorId || that_present_creatorId) {
+      if (!(this_present_creatorId && that_present_creatorId))
+        return false;
+      if (this.creatorId != that.creatorId)
+        return false;
+    }
+
+    boolean this_present_lastEditorId = true && this.isSetLastEditorId();
+    boolean that_present_lastEditorId = true && that.isSetLastEditorId();
+    if (this_present_lastEditorId || that_present_lastEditorId) {
+      if (!(this_present_lastEditorId && that_present_lastEditorId))
+        return false;
+      if (this.lastEditorId != that.lastEditorId)
         return false;
     }
 
@@ -1050,6 +1130,24 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetCreatorId()).compareTo(typedOther.isSetCreatorId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetCreatorId()) {      lastComparison = TBaseHelper.compareTo(this.creatorId, typedOther.creatorId);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetLastEditorId()).compareTo(typedOther.isSetLastEditorId());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetLastEditorId()) {      lastComparison = TBaseHelper.compareTo(this.lastEditorId, typedOther.lastEditorId);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -1203,6 +1301,22 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
             TProtocolUtil.skip(iprot, field.type);
           }
           break;
+        case 27: // CREATOR_ID
+          if (field.type == TType.I32) {
+            this.creatorId = iprot.readI32();
+            setCreatorIdIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
+        case 28: // LAST_EDITOR_ID
+          if (field.type == TType.I32) {
+            this.lastEditorId = iprot.readI32();
+            setLastEditorIdIsSet(true);
+          } else { 
+            TProtocolUtil.skip(iprot, field.type);
+          }
+          break;
         default:
           TProtocolUtil.skip(iprot, field.type);
       }
@@ -1326,6 +1440,16 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
         }
         oprot.writeFieldEnd();
       }
+    }
+    if (isSetCreatorId()) {
+      oprot.writeFieldBegin(CREATOR_ID_FIELD_DESC);
+      oprot.writeI32(this.creatorId);
+      oprot.writeFieldEnd();
+    }
+    if (isSetLastEditorId()) {
+      oprot.writeFieldBegin(LAST_EDITOR_ID_FIELD_DESC);
+      oprot.writeI32(this.lastEditorId);
+      oprot.writeFieldEnd();
     }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
@@ -1471,6 +1595,18 @@ public class NoteAttributes implements TBase<NoteAttributes>, java.io.Serializab
       } else {
         sb.append(this.classifications);
       }
+      first = false;
+    }
+    if (isSetCreatorId()) {
+      if (!first) sb.append(", ");
+      sb.append("creatorId:");
+      sb.append(this.creatorId);
+      first = false;
+    }
+    if (isSetLastEditorId()) {
+      if (!first) sb.append(", ");
+      sb.append("lastEditorId:");
+      sb.append(this.lastEditorId);
       first = false;
     }
     sb.append(")");
