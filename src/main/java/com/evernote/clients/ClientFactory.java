@@ -156,6 +156,34 @@ public class ClientFactory {
         linkedNoteStoreClient, businessAuthResult);
   }
 
+  
+  /**
+   * Create a new Business NoteStore client. Each call to this method will
+   * return a new NoteStore.Client instance. The returned client can be used for
+   * any number of API calls, but is NOT thread safe.
+   * 
+   * This method will check expiration time for the business authorization
+   * token, this is a network request
+   * 
+   * This method is synchronous
+   * 
+   * @param  businessAuthResult  
+   * @throws TException
+   * @throws EDAMUserException
+   * @throws EDAMSystemException
+   *           User is not part of a business
+   */
+  public BusinessNoteStoreClient createBusinessNoteStoreClient(AuthenticationResult businessAuthResult)
+      throws TException, EDAMUserException, EDAMSystemException {    
+    NoteStoreClient mainNoteStoreClient = createNoteStoreClient();   
+    NoteStoreClient linkedNoteStoreClient = createStoreClient(
+        NoteStoreClient.class, businessAuthResult.getNoteStoreUrl(),
+        businessAuthResult.getAuthenticationToken());
+    return new BusinessNoteStoreClient(mainNoteStoreClient,
+        linkedNoteStoreClient, businessAuthResult);
+  }
+  
+  
   /**
    * @param clientClass
    * @param url

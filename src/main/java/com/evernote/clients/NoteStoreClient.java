@@ -100,7 +100,7 @@ public class NoteStoreClient {
   /**
    * @return authToken inserted into calls
    */
-  String getToken() {
+  public String getToken() {
     return token;
   }
 

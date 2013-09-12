@@ -72,15 +72,15 @@ public class LinkedNoteStoreClient {
     return linkedNoteStoreClient;
   }
 
-  NoteStoreClient getPersonalClient() {
+  public NoteStoreClient getPersonalClient() {
     return mainNoteStoreClient;
   }
 
-  AuthenticationResult getAuthenticationResult() {
+  public AuthenticationResult getAuthenticationResult() {
     return authenticationResult;
   }
 
-  String getToken() {
+  public String getToken() {
     return getAuthenticationResult().getAuthenticationToken();
   }
 
@@ -99,15 +99,28 @@ public class LinkedNoteStoreClient {
    * 
    */
   public Note createNote(Note note, LinkedNotebook linkedNotebook)
-      throws EDAMUserException, EDAMSystemException, TException,
-      EDAMNotFoundException {
-
-    SharedNotebook sharedNotebook = getClient().getSharedNotebookByAuth();
-    note.setNotebookGuid(sharedNotebook.getNotebookGuid());
+      throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException {  
+    note.setNotebookGuid(getSharedNotebookGuid(linkedNotebook));
     return getClient().createNote(note);
-
   }
 
+  
+  /**
+   * Helper method to get Shared Notebook's GUID
+   * 
+   **/  
+  public String getSharedNotebookGuid(LinkedNotebook linkedNotebook)
+      throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException {
+    AuthenticationResult shareAuthResult =
+        linkedNoteStoreClient.getClient().authenticateToSharedNotebook(linkedNotebook
+            .getShareKey(), mainNoteStoreClient.getToken());
+    SharedNotebook sharedNotebook =
+        linkedNoteStoreClient.getClient().getSharedNotebookByAuth(shareAuthResult
+            .getAuthenticationToken());
+    return sharedNotebook.getNotebookGuid();
+  }
+  
+  
   /**
    * Helper method to list linked notebooks
    * 
