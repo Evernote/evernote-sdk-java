@@ -98,7 +98,7 @@ public class LinkedNoteStoreClient {
    * @throws com.evernote.edam.error.EDAMNotFoundException
    * 
    */
-  public Note createNote(Note note, LinkedNotebook linkedNotebook)
+  public Note createNote(Note note)
       throws EDAMUserException, EDAMSystemException, TException,
       EDAMNotFoundException {
 
