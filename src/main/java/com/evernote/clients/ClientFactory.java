@@ -1,27 +1,24 @@
 /*
- * Copyright 2012 Evernote Corporation
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright 2012 Evernote Corporation All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, are permitted
+ * provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions
+ * and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other materials provided with
+ * the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.evernote.clients;
 
@@ -52,8 +49,7 @@ import com.evernote.thrift.transport.TTransportException;
 public class ClientFactory {
 
   private static final String USER_AGENT_KEY = "User-Agent";
-  private static final Pattern CONSUMER_KEY_REGEX = Pattern
-      .compile(":A=([^:]+):");
+  private static final Pattern CONSUMER_KEY_REGEX = Pattern.compile(":A=([^:]+):");
 
   private EvernoteAuth evernoteAuth;
   private String userAgent;
@@ -70,28 +66,24 @@ public class ClientFactory {
   }
 
   /**
-   * Create a new UserStore client. Each call to this method will return a new
-   * UserStore.Client instance. The returned client can be used for any number
-   * of API calls, but is NOT thread safe.
+   * Create a new UserStore client. Each call to this method will return a new UserStore.Client
+   * instance. The returned client can be used for any number of API calls, but is NOT thread safe.
    * 
-   * @param url
-   *          to connect to
+   * @param url to connect to
    * 
-   * @throws TTransportException
-   *           if an error occurs setting up the connection to the Evernote
+   * @throws TTransportException if an error occurs setting up the connection to the Evernote
    *           service.
    * 
    */
   public UserStoreClient createUserStoreClient() throws TTransportException {
     String serviceUrl = this.evernoteAuth.getUserStoreUrl();
-    return createStoreClient(UserStoreClient.class, serviceUrl,
-        this.evernoteAuth.getToken());
+    return createStoreClient(UserStoreClient.class, serviceUrl, this.evernoteAuth
+        .getToken());
   }
 
   /**
-   * Create a new NoteStore client. Each call to this method will return a new
-   * NoteStore.Client instance. The returned client can be used for any number
-   * of API calls, but is NOT thread safe.
+   * Create a new NoteStore client. Each call to this method will return a new NoteStore.Client
+   * instance. The returned client can be used for any number of API calls, but is NOT thread safe.
    * 
    * @throws TException
    * @throws EDAMSystemException
@@ -104,8 +96,8 @@ public class ClientFactory {
       noteStoreUrl = createUserStoreClient().getNoteStoreUrl();
       this.evernoteAuth.setNoteStoreUrl(noteStoreUrl);
     }
-    return createStoreClient(NoteStoreClient.class, noteStoreUrl,
-        this.evernoteAuth.getToken());
+    return createStoreClient(NoteStoreClient.class, noteStoreUrl, this.evernoteAuth
+        .getToken());
   }
 
   /**
@@ -113,55 +105,56 @@ public class ClientFactory {
    * 
    * @param linkedNotebook
    */
-  public LinkedNoteStoreClient createLinkedNoteStoreClient(
-      LinkedNotebook linkedNotebook) throws EDAMUserException,
-      EDAMSystemException, TException, EDAMNotFoundException {
+  public LinkedNoteStoreClient createLinkedNoteStoreClient(LinkedNotebook linkedNotebook)
+      throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException {
 
     NoteStoreClient mainNoteStoreClient = createNoteStoreClient();
-    
-    //authenticate to remote sharedNotebook object according to the shareKey of this linkedNotebook
+
+    // authenticate to remote sharedNotebook object according to the shareKey of this linkedNotebook
     THttpClient noteStoreTrans;
     noteStoreTrans = new THttpClient(linkedNotebook.getNoteStoreUrl());
     TBinaryProtocol noteStoreProt = new TBinaryProtocol(noteStoreTrans);
-    NoteStore.Client tmpLinkedNoteStoreClient = new NoteStore.Client(noteStoreProt, noteStoreProt);
-    
-    AuthenticationResult sharedAuth = tmpLinkedNoteStoreClient.authenticateToSharedNotebook(linkedNotebook.getShareKey(), mainNoteStoreClient.getToken());
-    
-    NoteStoreClient linkedNoteStoreClient = createStoreClient(
-        NoteStoreClient.class, linkedNotebook.getNoteStoreUrl(),
-        sharedAuth.getAuthenticationToken());
-    
-    return new LinkedNoteStoreClient(mainNoteStoreClient,
-        linkedNoteStoreClient, sharedAuth);
+    NoteStore.Client tmpLinkedNoteStoreClient =
+        new NoteStore.Client(noteStoreProt, noteStoreProt);
+
+    AuthenticationResult sharedAuth =
+        tmpLinkedNoteStoreClient.authenticateToSharedNotebook(linkedNotebook
+            .getShareKey(), mainNoteStoreClient.getToken());
+
+    NoteStoreClient linkedNoteStoreClient =
+        createStoreClient(NoteStoreClient.class, linkedNotebook.getNoteStoreUrl(),
+            sharedAuth.getAuthenticationToken());
+
+    return new LinkedNoteStoreClient(mainNoteStoreClient, linkedNoteStoreClient,
+        sharedAuth);
   }
 
   /**
-   * Create a new Business NoteStore client. Each call to this method will
-   * return a new NoteStore.Client instance. The returned client can be used for
-   * any number of API calls, but is NOT thread safe.
+   * Create a new Business NoteStore client. Each call to this method will return a new
+   * NoteStore.Client instance. The returned client can be used for any number of API calls, but is
+   * NOT thread safe.
    * 
-   * This method will check expiration time for the business authorization
-   * token, this is a network request
+   * This method will check expiration time for the business authorization token, this is a network
+   * request
    * 
    * This method is synchronous
    * 
    * @throws TException
    * @throws EDAMUserException
-   * @throws EDAMSystemException
-   *           User is not part of a business
+   * @throws EDAMSystemException User is not part of a business
    */
-  public BusinessNoteStoreClient createBusinessNoteStoreClient()
-      throws TException, EDAMUserException, EDAMSystemException {
+  public BusinessNoteStoreClient createBusinessNoteStoreClient() throws TException,
+      EDAMUserException, EDAMSystemException {
 
     NoteStoreClient mainNoteStoreClient = createNoteStoreClient();
-    AuthenticationResult businessAuthResult = createUserStoreClient()
-        .authenticateToBusiness();
-    NoteStoreClient linkedNoteStoreClient = createStoreClient(
-        NoteStoreClient.class, businessAuthResult.getNoteStoreUrl(),
-        businessAuthResult.getAuthenticationToken());
+    AuthenticationResult businessAuthResult =
+        createUserStoreClient().authenticateToBusiness();
+    NoteStoreClient linkedNoteStoreClient =
+        createStoreClient(NoteStoreClient.class, businessAuthResult.getNoteStoreUrl(),
+            businessAuthResult.getAuthenticationToken());
 
-    return new BusinessNoteStoreClient(mainNoteStoreClient,
-        linkedNoteStoreClient, businessAuthResult);
+    return new BusinessNoteStoreClient(mainNoteStoreClient, linkedNoteStoreClient,
+        businessAuthResult);
   }
 
   /**
@@ -184,8 +177,8 @@ public class ClientFactory {
 
     TProtocol protocol = new TBinaryProtocol(transport);
     try {
-      return clientClass.getDeclaredConstructor(TProtocol.class,
-          TProtocol.class, String.class).newInstance(protocol, protocol, token);
+      return clientClass.getDeclaredConstructor(TProtocol.class, TProtocol.class,
+          String.class).newInstance(protocol, protocol, token);
     } catch (Throwable e) {
       throw new RuntimeException("Couldn't create " + clientClass.getName()
           + " due to the error.", e);
@@ -199,8 +192,7 @@ public class ClientFactory {
     String id = userAgent;
     if (id == null) {
       Matcher matcher = CONSUMER_KEY_REGEX.matcher(evernoteAuth.getToken());
-      if (matcher.find() && matcher.groupCount() >= 1
-          && matcher.group(1) != null) {
+      if (matcher.find() && matcher.groupCount() >= 1 && matcher.group(1) != null) {
         id = matcher.group(1);
       } else {
         id = "";
@@ -209,8 +201,7 @@ public class ClientFactory {
 
     String sdkVersion = getClass().getPackage().getImplementationVersion();
     if (sdkVersion == null) {
-      sdkVersion = Constants.EDAM_VERSION_MAJOR + "."
-          + Constants.EDAM_VERSION_MINOR;
+      sdkVersion = Constants.EDAM_VERSION_MAJOR + "." + Constants.EDAM_VERSION_MINOR;
     }
     String javaVersion = System.getProperty("java.version");
     return id + " / " + sdkVersion + "; Java / " + javaVersion;

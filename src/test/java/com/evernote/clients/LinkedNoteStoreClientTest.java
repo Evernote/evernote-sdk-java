@@ -45,7 +45,7 @@ public class LinkedNoteStoreClientTest {
   LinkedNoteStoreClient client;
 
   @Before
-  public void initialize() throws Exception {    
+  public void initialize() throws Exception {
     assertNotNull(token);
 
     EvernoteAuth auth = new EvernoteAuth(EvernoteService.SANDBOX, token);
