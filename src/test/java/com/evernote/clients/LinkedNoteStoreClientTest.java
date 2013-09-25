@@ -24,7 +24,12 @@ package com.evernote.clients;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.stub;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -35,10 +40,13 @@ import com.evernote.auth.EvernoteService;
 import com.evernote.edam.type.LinkedNotebook;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
+import com.evernote.edam.type.NotebookRestrictions;
+import com.evernote.edam.type.SharedNotebook;
+import com.evernote.edam.userstore.AuthenticationResult;
 
 public class LinkedNoteStoreClientTest {
 
-  // Please set developer token before testing
+  // If set, test with actual API calls
   String token = null;
 
   LinkedNotebook linkedNotebook = null;
@@ -46,13 +54,45 @@ public class LinkedNoteStoreClientTest {
 
   @Before
   public void initialize() throws Exception {
-    assertNotNull(token);
+    if (token == null) {
+      client = mock(LinkedNoteStoreClient.class);
 
-    EvernoteAuth auth = new EvernoteAuth(EvernoteService.SANDBOX, token);
-    ClientFactory factory = new ClientFactory(auth);
-    linkedNotebook = factory.createNoteStoreClient().listLinkedNotebooks().get(0);
-    client = factory.createLinkedNoteStoreClient(linkedNotebook);
+      NoteStoreClient noteStoreClient = mock(NoteStoreClient.class);
 
+      Note createdNote = new Note();
+      createdNote.setGuid("guid");
+      stub(noteStoreClient.createNote(isA(Note.class))).toReturn(createdNote);
+
+      NotebookRestrictions restrictions = new NotebookRestrictions();
+      restrictions.setNoCreateNotes(false);
+
+      Notebook createdNotebook = new Notebook();
+      createdNotebook.setRestrictions(restrictions);
+      stub(noteStoreClient.createNotebook(isA(Notebook.class))).toReturn(createdNotebook);
+      stub(noteStoreClient.getNotebook(anyString())).toReturn(createdNotebook);
+
+      SharedNotebook sharedNotebook = new SharedNotebook();
+      stub(noteStoreClient.getSharedNotebookByAuth()).toReturn(sharedNotebook);
+
+      NoteStoreClient personalClient = mock(NoteStoreClient.class);
+
+      List<LinkedNotebook> listLinkedNotebooks = new ArrayList<LinkedNotebook>();
+      stub(personalClient.listLinkedNotebooks()).toReturn(listLinkedNotebooks);
+
+      LinkedNotebook createdLinkedNotebook = new LinkedNotebook();
+      stub(personalClient.createLinkedNotebook(isA(LinkedNotebook.class))).toReturn(
+          createdLinkedNotebook);
+
+      AuthenticationResult authenticationResult = new AuthenticationResult();
+
+      client =
+          new LinkedNoteStoreClient(personalClient, noteStoreClient, authenticationResult);
+    } else {
+      EvernoteAuth auth = new EvernoteAuth(EvernoteService.SANDBOX, token);
+      ClientFactory factory = new ClientFactory(auth);
+      linkedNotebook = factory.createNoteStoreClient().listLinkedNotebooks().get(0);
+      client = factory.createLinkedNoteStoreClient(linkedNotebook);
+    }
   }
 
   @Test
