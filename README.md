@@ -53,9 +53,12 @@ The easiest way to incorporate the SDK into your Java project is to use Maven. I
 <dependency>
     <groupId>com.evernote</groupId>
     <artifactId>evernote-api</artifactId>
-    <version>1.25.0</version>
+    <version>1.25</version>
 </dependency>
 ```
+
+Please note that at least up until version 1.25, there was no minor version for the Maven artifacts, so they were all in the format `RELEASE_NO.MAJOR` (rather than `RELEASE_NO.MAJOR.MINOR`). As such, the version should be specified as `1.24` and not `1.24.0`. There is however a version `1.25.1` at the moment this page was being updated. You can browse all the versions on the maven repository here: http://repo1.maven.org/maven2/com/evernote/evernote-api/
+
 
 If you'd prefer to build the SDK yourself, it's as simple as running
 
