@@ -112,3 +112,8 @@ Real applications use OAuth to authenticate to the Evernote service with Scala /
 1. Fill in your Evernote API consumer key and secret
 1. Run project with `play run`
 1. Load the web application in your browser (e.g. `http://localhost:9000`)
+
+Sample Code - Clojure
+--------------------------
+
+A user-community Clojure wrapper to the Evernote Java SDK is available at https://github.com/mikebroberts/clojurenote . The library provides OAuth authentication, read/write capabilities (using an OAuth access token, or developer token) and ENML to HTML translation. A sample compojure / ring app is also provided to show how OAuth workflow can be implemented.
