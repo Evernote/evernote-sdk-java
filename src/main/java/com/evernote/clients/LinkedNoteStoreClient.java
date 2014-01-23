@@ -88,7 +88,6 @@ public class LinkedNoteStoreClient {
    * Helper method to create a note in a linked notebook
    * 
    * @param note
-   * @param linkedNotebook
    * @return
    * @throws com.evernote.edam.error.EDAMUserException
    * 
@@ -98,14 +97,12 @@ public class LinkedNoteStoreClient {
    * @throws com.evernote.edam.error.EDAMNotFoundException
    * 
    */
-  public Note createNote(Note note, LinkedNotebook linkedNotebook)
-      throws EDAMUserException, EDAMSystemException, TException,
-      EDAMNotFoundException {
+  public Note createNote(Note note) throws EDAMUserException, EDAMSystemException,
+      TException, EDAMNotFoundException {
 
     SharedNotebook sharedNotebook = getClient().getSharedNotebookByAuth();
     note.setNotebookGuid(sharedNotebook.getNotebookGuid());
     return getClient().createNote(note);
-
   }
 
   /**

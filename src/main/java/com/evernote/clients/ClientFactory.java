@@ -33,6 +33,7 @@ import com.evernote.auth.EvernoteAuth;
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
 import com.evernote.edam.error.EDAMUserException;
+import com.evernote.edam.notestore.NoteStore;
 import com.evernote.edam.type.LinkedNotebook;
 import com.evernote.edam.userstore.AuthenticationResult;
 import com.evernote.edam.userstore.Constants;
@@ -112,19 +113,27 @@ public class ClientFactory {
    * 
    * @param linkedNotebook
    */
-  public LinkedNoteStoreClient createLinkedNoteStoreClient(
-      LinkedNotebook linkedNotebook) throws EDAMUserException,
-      EDAMSystemException, TException, EDAMNotFoundException {
+  public LinkedNoteStoreClient createLinkedNoteStoreClient(LinkedNotebook linkedNotebook)
+      throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException {
 
     NoteStoreClient mainNoteStoreClient = createNoteStoreClient();
-    AuthenticationResult sharedAuth = mainNoteStoreClient
-        .authenticateToSharedNotebook(linkedNotebook.getShareKey());
-    NoteStoreClient linkedNoteStoreClient = createStoreClient(
-        NoteStoreClient.class, linkedNotebook.getNoteStoreUrl(),
-        sharedAuth.getAuthenticationToken());
 
-    return new LinkedNoteStoreClient(mainNoteStoreClient,
-        linkedNoteStoreClient, sharedAuth);
+    THttpClient noteStoreTrans;
+    noteStoreTrans = new THttpClient(linkedNotebook.getNoteStoreUrl());
+    TBinaryProtocol noteStoreProt = new TBinaryProtocol(noteStoreTrans);
+    NoteStore.Client tmpLinkedNoteStoreClient =
+        new NoteStore.Client(noteStoreProt, noteStoreProt);
+
+    AuthenticationResult sharedAuth =
+        tmpLinkedNoteStoreClient.authenticateToSharedNotebook(linkedNotebook
+            .getShareKey(), mainNoteStoreClient.getToken());
+
+    NoteStoreClient linkedNoteStoreClient =
+        createStoreClient(NoteStoreClient.class, linkedNotebook.getNoteStoreUrl(),
+            sharedAuth.getAuthenticationToken());
+
+    return new LinkedNoteStoreClient(mainNoteStoreClient, linkedNoteStoreClient,
+        sharedAuth);
   }
 
   /**
