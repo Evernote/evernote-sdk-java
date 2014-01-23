@@ -25,7 +25,7 @@
     <dependency>
       <groupId>com.evernote</groupId>
       <artifactId>evernote-api</artifactId>
-      <version>1.25.1</version>
+      <version>1.25.2</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

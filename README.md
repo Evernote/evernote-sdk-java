@@ -53,7 +53,7 @@ The easiest way to incorporate the SDK into your Java project is to use Maven. I
 <dependency>
     <groupId>com.evernote</groupId>
     <artifactId>evernote-api</artifactId>
-    <version>1.25.0</version>
+    <version>1.25.2</version>
 </dependency>
 ```
 
@@ -63,7 +63,7 @@ If you'd prefer to build the SDK yourself, it's as simple as running
 $ mvn package
 ```
 
-You'll find `evernote-sdk-1.25.0.jar` in the target directory after the build completes. This single JAR contains everything needed to use the API.
+You'll find `evernote-sdk-1.25.2.jar` in the target directory after the build completes. This single JAR contains everything needed to use the API.
 
 Sample Code - Client
 ------------------------
@@ -79,13 +79,13 @@ The code in `sample/client/EDAMDemo.java` demonstrates the basics of using the E
 1. On the command line, run the following command to compile the class:
 
     ```bash
-    $ javac -classpath ../../target/evernote-api-1.25.1.jar EDAMDemo.java
+    $ javac -classpath ../../target/evernote-api-1.25.2.jar EDAMDemo.java
     ```
 
 1. On the command line, run the following command to execute the sample app:
 
     ```bash
-    $ java -classpath .:../../target/evernote-api-1.25.1.jar EDAMDemo
+    $ java -classpath .:../../target/evernote-api-1.25.2.jar EDAMDemo
     ````
 
 Sample Code - OAuth
