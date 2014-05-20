@@ -32,11 +32,6 @@
   </scm>
   <developers>
     <developer>
-      <id>tsmith</id>
-      <name>Ty Smith</name>
-      <email>tsmith@evernote.com</email>
-    </developer>
-    <developer>
       <id>shitchings</id>
       <name>Seth Hitchings</name>
       <email>shitchings@evernote.com</email>
