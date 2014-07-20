@@ -1,27 +1,24 @@
 /*
- * Copyright 2012 Evernote Corporation.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
- * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright 2012 Evernote Corporation. All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, are permitted
+ * provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions
+ * and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other materials provided with
+ * the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+ * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.evernote.clients;
 
@@ -38,9 +35,9 @@ import com.evernote.edam.userstore.AuthenticationResult;
 import com.evernote.thrift.TException;
 
 /**
- * This is a wrapper/helper class that manages the connection to a linked
- * notestore. It maintains two {@link LinkedNoteStoreClient} objects, one points
- * to the users personal store and the other to linked notebooks shard.
+ * This is a wrapper/helper class that manages the connection to a linked notestore. It maintains
+ * two {@link LinkedNoteStoreClient} objects, one points to the users personal store and the other
+ * to linked notebooks shard.
  * 
  * 
  * @author @tylersmithnet
@@ -55,16 +52,14 @@ public class LinkedNoteStoreClient {
   private AuthenticationResult authenticationResult;
 
   LinkedNoteStoreClient(NoteStoreClient mainNoteStoreClient,
-      NoteStoreClient linkedNoteStoreClient,
-      AuthenticationResult authenticationResult) {
+      NoteStoreClient linkedNoteStoreClient, AuthenticationResult authenticationResult) {
     this.mainNoteStoreClient = mainNoteStoreClient;
     this.linkedNoteStoreClient = linkedNoteStoreClient;
     this.authenticationResult = authenticationResult;
   }
 
   /**
-   * Returns the {@link NoteStoreClient} object that has been instantiated to
-   * the appropriate shard
+   * Returns the {@link NoteStoreClient} object that has been instantiated to the appropriate shard
    * 
    * @return
    */
@@ -98,9 +93,8 @@ public class LinkedNoteStoreClient {
    * @throws com.evernote.edam.error.EDAMNotFoundException
    * 
    */
-  public Note createNote(Note note, LinkedNotebook linkedNotebook)
-      throws EDAMUserException, EDAMSystemException, TException,
-      EDAMNotFoundException {
+  public Note createNote(Note note) throws EDAMUserException, EDAMSystemException,
+      TException, EDAMNotFoundException {
 
     SharedNotebook sharedNotebook = getClient().getSharedNotebookByAuth();
     note.setNotebookGuid(sharedNotebook.getNotebookGuid());
@@ -126,8 +120,7 @@ public class LinkedNoteStoreClient {
    * @param linkedNotebook
    */
   public Notebook getCorrespondingNotebook(LinkedNotebook linkedNotebook)
-      throws TException, EDAMUserException, EDAMSystemException,
-      EDAMNotFoundException {
+      throws TException, EDAMUserException, EDAMSystemException, EDAMNotFoundException {
     SharedNotebook sharedNotebook = getClient().getSharedNotebookByAuth();
     return getClient().getNotebook(sharedNotebook.getNotebookGuid());
   }
@@ -138,8 +131,7 @@ public class LinkedNoteStoreClient {
    * @param linkedNotebook
    */
   public boolean isNotebookWritable(LinkedNotebook linkedNotebook)
-      throws EDAMUserException, TException, EDAMSystemException,
-      EDAMNotFoundException {
+      throws EDAMUserException, TException, EDAMSystemException, EDAMNotFoundException {
     Notebook notebook = getCorrespondingNotebook(linkedNotebook);
     return !notebook.getRestrictions().isNoCreateNotes();
   }

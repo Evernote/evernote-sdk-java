@@ -87,6 +87,15 @@ public class NoteStoreClient {
     this.token = token;
   }
 
+  NoteStoreClient(TProtocol iprot, TProtocol oprot) {
+    if (iprot == null || oprot == null) {
+      throw new IllegalArgumentException(
+          "TProtocol and Token must not be null.");
+    }
+    this.client = new NoteStore.Client(iprot, oprot);
+    this.token = null;
+  }
+  
   /**
    * If direct access to the Note Store is needed, all of these calls are
    * synchronous
