@@ -83,7 +83,7 @@ public class EDAMDemo {
       // These are the most common error types that you'll need to
       // handle
       // EDAMUserException is thrown when an API call fails because a
-      // paramter was invalid.
+      // parameter was invalid.
       if (e.getErrorCode() == EDAMErrorCode.AUTH_EXPIRED) {
         System.err.println("Your authentication token is expired!");
       } else if (e.getErrorCode() == EDAMErrorCode.INVALID_AUTH) {
