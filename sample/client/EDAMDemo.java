@@ -1,14 +1,14 @@
 /*
   Evernote API sample code, structured as a simple command line
   application that demonstrates several API calls.
-  
+
   To compile (Unix):
     javac -classpath ../../target/evernote-api-*.jar EDAMDemo.java
- 
+
   To run:
-    java -classpath ../../target/evernote-api-*.jar EDAMDemo
- 
-  Full documentation of the Evernote API can be found at 
+    java -classpath .:../../target/evernote-api-*.jar EDAMDemo
+
+  Full documentation of the Evernote API can be found at
   http://dev.evernote.com/documentation/cloud/
  */
 
